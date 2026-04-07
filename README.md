@@ -1,8 +1,8 @@
-# [your app name here]
+# Note Board
 
 CodePath WEB103 Final Project
 
-Designed and developed by: [your names here]
+Designed and developed by: Olha Sorych, Sing Zheng, and Jonatan Paulino
 
 🔗 Link to deployed app:
 
