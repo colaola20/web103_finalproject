@@ -10,7 +10,9 @@ Designed and developed by: Olha Sorych, Sing Zheng, and Jonatan Paulino
 
 ### Description and Purpose
 
-[text goes here]
+Note Board is an interactive notes app where users can create, edit, and delete notes, organize them into categories, add tags, and customize them with different colors.
+
+This app is designed to make the note-taking process more organized, easy to navigate, and reliable. Users can capture notes anytime without worrying about losing them. The app ensures that all notes are stored safely and remain easy to find when needed.
 
 ### Inspiration
 
