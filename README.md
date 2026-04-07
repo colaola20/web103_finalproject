@@ -72,16 +72,16 @@ cd web103_finalproject/FUN
 2. Install All Dependencies
 We use a monorepo structure. You need to install dependencies in three locations: the root, the backend, and the frontend.
 
-# Install root dependencies (concurrently)
+#### > Install root dependencies (concurrently)
 npm install
 
-# Install backend dependencies
+#### >  Install backend dependencies
 cd backend && npm install
 
-# Install frontend dependencies
+#### >  Install frontend dependencies
 cd ../frontend && npm install
 
-# Return to the root folder
+#### >  Return to the root folder
 cd ..
 
 3. Running the AppFrom the root directory (/FUN), start both the frontend and backend simultaneously.
