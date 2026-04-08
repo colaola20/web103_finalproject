@@ -20,7 +20,7 @@ Reference the Writing User Stories final project guide in the course portal for 
 
 6. As User, I want to delete notes that are no longer relevant so that my board stays clean and organized.
 
-7. As User, I want to search my notes by specific keywords or tags so that I can find information from weeks ago in seconds.
+7. As User, I want to filter my notes by specific categories or/and tags so that I can find information from weeks ago in seconds.
 
 8. As a Creative, I want to change the color of my brainstorming notes to bright yellow so that I can visually distinguish "ideas" from "finalized tasks."
 
