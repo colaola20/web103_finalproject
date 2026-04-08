@@ -9,6 +9,7 @@ Reference the Creating an Entity Relationship Diagram final project guide in the
 Create New Note
 ⭐ Setting
 Confirmation modal (for note detetion)
+Login/Registration Pages
 
 ## Wireframe 1: [Dashboard (Main Board View)] ⭐ - The primary view where all notes are displayed in a grid.
 https://www.figma.com/make/FxMUbamjACaq0BtedWgQfo/Create-wireframe?p=f&t=cdmLJwPgsmkSUS1a-0&fullscreen=1
