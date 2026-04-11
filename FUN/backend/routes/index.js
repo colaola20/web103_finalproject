@@ -11,7 +11,7 @@ router.get('/', async function(req, res, next) {
     }
     return res.json({ message: 'Database connection successful', time: result.rows[0].now });
   })
-});
+}); 
 
 router.get('/hello', function(req, res, next) {
   return res.json({message: `Hello from the backend!`});
