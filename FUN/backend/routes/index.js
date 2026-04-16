@@ -80,14 +80,18 @@ router.post("/register", async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
 
-    await pool.query(
-      "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
+    const result = await pool.query(
+      "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id",
       [username, email, hashedPassword],
     );
+
+    const userID = result.rows[0].id;
 
     return res.status(201).json({
       message: `User ${username} created successfully!`,
       success: true,
+      userID: userID,
+      username: username,
     });
   } catch (error) {
     if (error.code === "23505") {
