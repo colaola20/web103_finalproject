@@ -1,46 +1,31 @@
-import { useState } from 'react';
-import {helloWord} from './services/api.js';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 import './App.css';
 
 function App() {
-  const [response, setResponse] = useState('Click to test connection');
-  const [loading, setLoading] = useState(false);
-
-  const backendTest = async () => {
-    setLoading(true);
-    try {
-      const data = await helloWord();
-      setResponse(data.message || 'Connected, but no message found.');
-    } catch (error) {
-      setResponse(`Error: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  //test commit
   return (
-    <div style={{ 
-      display: "flex", 
-      flexDirection: "column", 
-      alignItems: "center",  
-      justifyContent: "center", 
-      height: "100vh"          
-    }}>
-      <div style={{ 
-        padding: '20px', 
-        border: '1px solid #ff0404', 
-        borderRadius: '8px',
-        marginBottom: '20px'
-      }}>
-        <p>{loading ? 'Connecting...' : response}</p>
-      </div>
-      
-      <button onClick={backendTest} disabled={loading}>
-        {loading ? 'Testing...' : 'Test Backend Connection'}
-      </button>
-    </div>
-  )
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;
