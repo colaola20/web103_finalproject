@@ -32,7 +32,8 @@ Users can seamlessly create new notes, view them in a gallery or list format, up
 
 ### [Dynamic Categorization]
 
-Organize notes into specific categories (e.g., Work, Personal, School) to keep different areas of life separated and manageable.
+✅ Organize notes into specific categories (e.g., Work, Personal, School) to keep different areas of life separated and manageable.
+![Image showing the sorting](image.png)
 
 ### [Pinned Favorites]
 
@@ -40,7 +41,8 @@ The ability to "pin" important notes to the top of the dashboard so that high pr
 
 ### [Color-Coded Customization]
 
-Assign unique background colors to each note, allowing for visual grouping and a personalized aesthetic.
+✅ Assign unique background colors to each note, allowing for visual grouping and a personalized aesthetic. 
+![alt text](image-1.png)
 
 ### [AI Smart-Fix (Text Correction)]
 
