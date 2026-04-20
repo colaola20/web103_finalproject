@@ -70,7 +70,7 @@ router.post("/register", async (req, res) => {
 
     // Requirements: Min 8 chars, at least 1 uppercase, 1 lowercase, 1 number, and 1 special character
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
         error:
