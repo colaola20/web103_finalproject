@@ -8,7 +8,7 @@ This unit, be sure to complete all tasks listed below. To complete a task, place
 
 You will need to reference the GitHub Project Management guide in the course portal for more information about how to complete each of these steps.
 
-- [ ] In your repo, create a project board. 
+- [x] In your repo, create a project board. 
   - *Please be sure to share your project board with the grading team's GitHub **codepathreview**. This is separate from your repository's sharing settings.*
 - [ ] In your repo, create at least 5 issues from the features on your feature list.
 - [ ] In your repo, update the status of issues in your project board.
