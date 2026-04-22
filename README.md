@@ -34,7 +34,7 @@ Backend:    Express
 - The web app is deployed on Render with all pages and features working.
 
 **Backend Features**
-- The web app implements at least one of each of the following database relationship in Postgres:
+✅ The web app implements at least one of each of the following database relationship in Postgres:
     ✅ one-to-many (user-notes: a user can have many notes, but each note belongs to one user)
     ✅ many-to-many with a join table (tags-categories: a tag can be in many categories and a category can use many tags)
 

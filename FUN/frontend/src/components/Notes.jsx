@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getNotes, createNote, updateNote, deleteNote, createCategory } from '../services/api';
+import AddNoteModal from './AddNoteModal';
 import '../styles/Dashboard.css';
 
 const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
@@ -17,10 +18,6 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
     is_pinned: false,
   });
 
-  useEffect(() => {
-    loadNotes();
-  }, [user?.userID]);
-
   const loadNotes = async () => {
     if (!user?.userID) return;
     try {
@@ -31,12 +28,25 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
     }
   };
 
+  useEffect(() => {
+    if (!user?.userID) return;
+    let cancelled = false;
+    getNotes(user.userID)
+      .then(data => { if (!cancelled) setNotes(data); })
+      .catch(err => console.error('Error loading notes:', err));
+    return () => { cancelled = true; };
+  }, [user?.userID]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handleColorChange = (color) => {
+    setFormData(prev => ({ ...prev, color }));
   };
 
   const handleSubmit = async (e) => {
@@ -49,17 +59,15 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
         .split(',')
         .map(tag => tag.trim())
         .filter(tag => tag.length > 0);
-      
+
       const categoryName = tagsArray.length > 0 ? tagsArray[0] : null;
       let categoryID = null;
 
-      // If category name provided, find or create it
       if (categoryName) {
         const matchingCategory = notes.find(note => note.category_name === categoryName);
         if (matchingCategory) {
           categoryID = matchingCategory.category_id;
         } else {
-          // Create new category
           const newCategory = await createCategory(user.userID, categoryName);
           categoryID = newCategory.id;
         }
@@ -129,122 +137,28 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
       is_pinned: false,
     });
   };
-
   // Filter notes based on selected category
-  const filteredNotes = selectedCategory === 'All' 
-    ? notes 
+  const filteredNotes = selectedCategory === 'All'
+    ? notes
     : notes.filter(note => note.category_name === selectedCategory);
 
   const pinnedNotes = filteredNotes.filter(note => note.is_pinned);
   const unpinnedNotes = filteredNotes.filter(note => !note.is_pinned);
-
   // Get unique categories for filter buttons
   const uniqueCategories = ['All', ...new Set(notes.map(note => note.category_name).filter(Boolean))];
 
-  // Color palette
-  const colorPalette = ['#fff3cd', '#c7e9f5', '#f5d5e0', '#d4f5e8', '#e5d7f5', '#ffe8d6', '#e8e8e8', '#ffeb99'];
-
   return (
     <div className="notes-view">
-      {/* Modal Form */}
-      {showForm && (
-        <div className="modal-overlay">
-          <div className="modal-dialog">
-            <div className="modal-header">
-              <h2>New Note</h2>
-              <button 
-                className="modal-close-btn" 
-                onClick={() => setShowForm(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="modal-form">
-              {formError && (
-                <div className="form-error">
-                  {formError}
-                </div>
-              )}
-              
-              <div className="form-group">
-                <label>Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="Note title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Content</label>
-                <textarea
-                  name="content"
-                  placeholder="Write your note here..."
-                  value={formData.content}
-                  onChange={handleChange}
-                  rows="6"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Tags (comma-seperated)</label>
-                <input
-                  type="text"
-                  name="tags"
-                  placeholder="work, personal, urgent..."
-                  value={formData.tags}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Color</label>
-                <div className="color-palette">
-                  {colorPalette.map(color => (
-                    <button
-                      key={color}
-                      type="button"
-                      className={`color-swatch ${formData.color === color ? 'active' : ''}`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => setFormData(prev => ({ ...prev, color }))}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="form-group checkbox-group">
-                <label>
-                  <input
-                    type="checkbox"
-                    name="is_pinned"
-                    checked={formData.is_pinned}
-                    onChange={handleChange}
-                  />
-                  Pin this note
-                </label>
-              </div>
-
-              <div className="modal-buttons">
-                <button 
-                  type="button" 
-                  className="btn-cancel" 
-                  onClick={() => setShowForm(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-save">
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <AddNoteModal
+        show={showForm}
+        editingNote={editingNote}
+        formData={formData}
+        formError={formError}
+        onChange={handleChange}
+        onColorChange={handleColorChange}
+        onSubmit={handleSubmit}
+        onClose={resetForm}
+      />
 
       {/* Filters */}
       <div className="filters-section">

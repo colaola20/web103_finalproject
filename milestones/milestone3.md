@@ -10,8 +10,8 @@ You will need to reference the GitHub Project Management guide in the course por
 
 - [x] In your repo, create a project board. 
   - *Please be sure to share your project board with the grading team's GitHub **codepathreview**. This is separate from your repository's sharing settings.*
-- [ ] In your repo, create at least 5 issues from the features on your feature list.
-- [ ] In your repo, update the status of issues in your project board.
+- [x] In your repo, create at least 5 issues from the features on your feature list.
+- [x] In your repo, update the status of issues in your project board.
 - [ ] In your repo, create a GitHub Milestone for each final project unit, corresponding to each of the 5 milestones in your `milestones/` directory. 
   - [ ] Set the completion percentage of each milestone. The GitHub Milestone for this unit (Milestone 3 - Unit 7) should be 100% completed when you submit for full points.
 - [X] In `readme.md`, check off the features you have completed in this unit by adding a ✅ emoji in front of the feature's name.
