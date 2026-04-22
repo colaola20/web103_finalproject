@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getNotes, getCategories } from '../services/api';
 import Notes from '../components/Notes';
+import DashboardHeader from '../components/DashboardHeader';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -44,23 +45,13 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <header className="dashboard-header">
-        <h1>Note Board</h1>
-        <div className="header-actions">
-          <button className="settings-btn" onClick={() => setShowSettings(!showSettings)} title="Settings">
-            ⚙️
-          </button>
-          {showSettings && (
-            <div className="settings-menu">
-              <button onClick={handleLogout}>Logout</button>
-            </div>
-          )}
-          <button className="btn-new" onClick={() => setShowForm(!showForm)}>
-            {showForm ? '✕' : '+ New'}
-          </button>
-          
-        </div>
-      </header>
+      <DashboardHeader
+        showSettings={showSettings}
+        setShowSettings={setShowSettings}
+        showForm={showForm}
+        setShowForm={setShowForm}
+        onLogout={handleLogout}
+      />
 
       <main className="dashboard-content">
         <Notes 

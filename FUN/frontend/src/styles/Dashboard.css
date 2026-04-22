@@ -5,81 +5,6 @@
   background-color: #f9f9f9;
 }
 
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px 30px;
-  background: white;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.dashboard-header h1 {
-  margin: 0;
-  font-size: 28px;
-  color: #1a1a1a;
-  font-weight: 600;
-}
-
-.header-actions {
-  position: relative;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.settings-btn {
-  background: white;
-  border: 1px solid #ffffff;
-  font-size: 22px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  color: #666;
-}
-
-.settings-btn:hover {
-  background: #f5f5f5;
-  border-color: #999;
-  color: #333;
-}
-
-.settings-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 8px 0;
-  min-width: 120px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  margin-top: 8px;
-}
-
-.settings-menu button {
-  width: 100%;
-  padding: 10px 16px;
-  background: none;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  color: #333;
-  font-size: 14px;
-  transition: background 0.2s;
-}
-
-.settings-menu button:hover {
-  background: #f0f0f0;
-}
-
 .dashboard-content {
   flex: 1;
   overflow-y: auto;
@@ -88,22 +13,6 @@
 
 .notes-view {
   width: 100%;
-}
-
-.btn-new {
-  padding: 10px 20px;
-  background: #1a1a1a;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-new:hover {
-  background: #333;
 }
 
 /* Filters Section */
@@ -304,10 +213,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .dashboard-header {
-    padding: 15px 20px;
-  }
-
   .dashboard-content {
     padding: 20px;
   }
