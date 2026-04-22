@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getNotes, createNote, updateNote, deleteNote, createCategory } from '../services/api';
 import AddNoteModal from './AddNoteModal';
 import '../styles/Dashboard.css';
+import {ChevronDown} from "lucide-react"
 
 const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
   const { user } = useAuth();
@@ -174,7 +175,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
             </button>
           ))}
           <button className="filter-btn tags-btn">
-            Tags <span>▼</span>
+            Tags <ChevronDown size={14}/>
           </button>
         </div>
       </div>
