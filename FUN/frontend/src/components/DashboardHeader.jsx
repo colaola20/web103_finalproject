@@ -1,5 +1,6 @@
 import '../styles/DashboardHeader.css';
 import { Plus, X } from 'lucide-react';
+import MainButton from './MainButton';
 
 
 const DashboardHeader = ({ showSettings, setShowSettings, showForm, setShowForm, onLogout }) => {
@@ -15,9 +16,9 @@ const DashboardHeader = ({ showSettings, setShowSettings, showForm, setShowForm,
             <button onClick={onLogout}>Logout</button>
           </div>
         )}
-        <button className="btn-new" onClick={() => setShowForm(!showForm)}>
+        <MainButton onClick={() => setShowForm(!showForm)}>
           {showForm ? <X size={16}/> : <><Plus size={16} /> Note</>}
-        </button>
+        </MainButton>
       </div>
     </header>
   );

@@ -1,4 +1,6 @@
 import '../styles/AddNoteModal.css';
+import MainButton from './MainButton';
+import RegularButton from './RegularButton';
 
 const COLOR_PALETTE = ['#fff3cd', '#c7e9f5', '#f5d5e0', '#d4f5e8', '#e5d7f5', '#ffe8d6', '#e8e8e8', '#ffeb99'];
 
@@ -79,8 +81,8 @@ const AddNoteModal = ({ show, editingNote, formData, formError, onChange, onColo
           </div>
 
           <div className="modal-buttons">
-            <button type="button" className="btn-cancel" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn-save">Save</button>
+            <RegularButton type="button" className="modal-cancel" onClick={onClose}>Cancel</RegularButton>
+            <MainButton type="submit">Save</MainButton>
           </div>
         </form>
       </div>

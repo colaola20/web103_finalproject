@@ -153,35 +153,6 @@
   justify-content: flex-end;
 }
 
-.btn-cancel {
+.modal-cancel {
   padding: 10px 20px;
-  background: white;
-  color: #1a1a1a;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.btn-cancel:hover {
-  background: #f5f5f5;
-  border-color: #999;
-}
-
-.btn-save {
-  padding: 10px 20px;
-  background: #1a1a1a;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: background 0.2s;
-}
-
-.btn-save:hover {
-  background: #333;
 }

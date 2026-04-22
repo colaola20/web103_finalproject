@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getNotes, createNote, updateNote, deleteNote, createCategory } from '../services/api';
 import AddNoteModal from './AddNoteModal';
+import MainButton from './MainButton';
+import RegularButton from './RegularButton';
 import '../styles/Dashboard.css';
 import {ChevronDown} from "lucide-react"
 
@@ -55,7 +57,6 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
     setFormError('');
 
     try {
-      // Extract first tag as category
       const tagsArray = formData.tags
         .split(',')
         .map(tag => tag.trim())
@@ -138,14 +139,13 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
       is_pinned: false,
     });
   };
-  // Filter notes based on selected category
+
   const filteredNotes = selectedCategory === 'All'
     ? notes
     : notes.filter(note => note.category_name === selectedCategory);
 
   const pinnedNotes = filteredNotes.filter(note => note.is_pinned);
   const unpinnedNotes = filteredNotes.filter(note => !note.is_pinned);
-  // Get unique categories for filter buttons
   const uniqueCategories = ['All', ...new Set(notes.map(note => note.category_name).filter(Boolean))];
 
   return (
@@ -165,18 +165,16 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
       <div className="filters-section">
         <span className="filters-label">Filters:</span>
         <div className="filter-buttons">
-          {uniqueCategories.map(cat => (
-            <button
-              key={cat}
-              className={`filter-btn ${selectedCategory === cat ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-          <button className="filter-btn tags-btn">
+          {uniqueCategories.map(cat =>
+            selectedCategory === cat ? (
+              <MainButton key={cat} onClick={() => setSelectedCategory(cat)}>{cat}</MainButton>
+            ) : (
+              <RegularButton key={cat} onClick={() => setSelectedCategory(cat)}>{cat}</RegularButton>
+            )
+          )}
+          <RegularButton className="tags-btn">
             Tags <ChevronDown size={14}/>
-          </button>
+          </RegularButton>
         </div>
       </div>
 

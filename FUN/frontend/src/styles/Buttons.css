@@ -1,0 +1,50 @@
+/* MainButton — dark filled (Add Note, Save) */
+.main-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.main-btn:hover {
+  background: #333;
+}
+
+.main-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* RegularButton — outlined (Tags, Cancel, filters) */
+.regular-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.regular-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.regular-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
