@@ -74,6 +74,8 @@
 }
 
 .btn-new {
+  display: flex;
+  align-items: center;
   padding: 10px 20px;
   background: #1a1a1a;
   color: white;
@@ -83,6 +85,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
+  gap: 6px;
 }
 
 .btn-new:hover {
