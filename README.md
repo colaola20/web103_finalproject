@@ -26,13 +26,73 @@ Backend:    Express
 
 ## Features
 
+### Baseline Features
+✅ The web app includes an Express backend app and a React frontend app.
+
+- The web app includes dynamic routes for both frontend and backend apps.
+
+- The web app is deployed on Render with all pages and features working.
+
+**Backend Features**
+✅ The web app implements at least one of each of the following database relationship in Postgres:
+    ✅ one-to-many (user-notes: a user can have many notes, but each note belongs to one user)
+    ✅ many-to-many with a join table (tags-categories: a tag can be in many categories and a category can use many tags)
+
+- The web app implements a well-designed RESTful API that:
+    - supports all four main request types for a single entity: GET, POST, PATCH, and DELETE
+        - the user can view items, such as notes
+        - the user can create a new item, such as a notes
+        - the user can update an existing item by changing some or all of its values, such as changing the title of note
+        - the user can delete an existing item, such as a task
+    - Implements proper naming conventions for routes.
+
+- The web app includes the ability to reset the database to its default state.
+
+**Frontend Features**
+✅ The web app implements at least one redirection, where users are able to navigate to a new page with a new URL within the app (Login -> Registration)
+
+https://github.com/user-attachments/assets/cc5ed96b-e635-413f-b6ed-8ac31498f60f
+
+
+✅ The web app implements at least one interaction that the user can initiate and complete on the same page without navigating to a new page. (Add Note)
+
+
+- The web app uses dynamic frontend routes created with React Router.
+
+✅ The web app uses hierarchically designed React components:
+    ✅ Components are broken down into categories, including page and component types.
+    ✅ Corresponding container components and presenter components as appropriate.
+
+- The project is deployed on Render with all pages and features that are visible to the user are working as intended
+
+### Custom Features
+✅ The web app gracefully handles errors.
+
+https://github.com/user-attachments/assets/72fc76ed-f51f-4654-8566-8d72e1919d55
+
+
+✅  The web app includes a one-to-one database relationship (user has many notes, but each note belong to one user)
+
+✅ The web app includes a slide-out pane or modal as appropriate for your use case that pops up and covers the page content without navigating away from the current page. (Add note modal)
+
+https://github.com/user-attachments/assets/e29e2bdc-823d-4c9f-83f6-7d398cafd1d0
+
+
+- The user can filter or sort items based on particular criteria as appropriate for your use case. (users can filter notes using categories and tags)
+
+✅ Data submitted via a POST or PATCH request is validated before the database is updated (Password validation)
+
+https://github.com/user-attachments/assets/1359b054-3f5e-4ffe-b921-6bf66f41382e
+
+
 ### [Full CRUD Functionality]
 
 Users can seamlessly create new notes, view them in a gallery or list format, update content in real-time, and delete notes they no longer need.
 
 ### [Dynamic Categorization]
 
-Organize notes into specific categories (e.g., Work, Personal, School) to keep different areas of life separated and manageable.
+✅ Organize notes into specific categories (e.g., Work, Personal, School) to keep different areas of life separated and manageable.
+![Image showing the sorting](image.png)
 
 ### [Pinned Favorites]
 
@@ -40,7 +100,8 @@ The ability to "pin" important notes to the top of the dashboard so that high pr
 
 ### [Color-Coded Customization]
 
-Assign unique background colors to each note, allowing for visual grouping and a personalized aesthetic.
+✅ Assign unique background colors to each note, allowing for visual grouping and a personalized aesthetic. 
+![alt text](image-1.png)
 
 ### [AI Smart-Fix (Text Correction)]
 
@@ -53,6 +114,13 @@ Allows users to rewrite a note in a different tone transforming a casual brainst
 ## Installation Instructions
 
 Follow these steps to set up the Note Board development environment on your local machine.
+
+### Stretch Features
+✅ A subset of pages require the user to log in before accessing the content.
+    - Users can log in and log out via GitHub OAuth with Passport.js.
+
+https://github.com/user-attachments/assets/f448133e-12b8-4423-bf67-09256f2dda69
+
 
 📋 Prerequisites
 Ensure you have the following installed:
