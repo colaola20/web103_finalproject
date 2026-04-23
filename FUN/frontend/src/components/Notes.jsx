@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getNotes, createNote, updateNote, deleteNote, createCategory } from '../services/api';
 import AddNoteModal from './AddNoteModal';
+import Note from './Note';
 import MainButton from './MainButton';
 import RegularButton from './RegularButton';
 import '../styles/Dashboard.css';
@@ -184,22 +185,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
           <h2 className="pinned-title">📌 Pinned Notes</h2>
           <div className="notes-grid">
             {pinnedNotes.map(note => (
-              <div key={note.id} className="note-card" style={{ backgroundColor: note.color }}>
-                <div className="note-header">
-                  <h3>{note.title}</h3>
-                  <span className="pin-icon">📌</span>
-                </div>
-                <p className="note-content">{note.content}</p>
-                {note.category_name && (
-                  <div className="note-tags">
-                    <span className="tag">#{note.category_name}</span>
-                  </div>
-                )}
-                <div className="note-footer">
-                  <button onClick={() => handleEdit(note)} className="icon-btn">✏️</button>
-                  <button onClick={() => handleDelete(note.id)} className="icon-btn">🗑️</button>
-                </div>
-              </div>
+              <Note key={note.id} note={note} onEdit={handleEdit} onDelete={handleDelete} />
             ))}
           </div>
         </div>
@@ -214,21 +200,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
         ) : (
           <div className="notes-grid">
             {unpinnedNotes.map(note => (
-              <div key={note.id} className="note-card" style={{ backgroundColor: note.color }}>
-                <div className="note-header">
-                  <h3>{note.title}</h3>
-                </div>
-                <p className="note-content">{note.content}</p>
-                {note.category_name && (
-                  <div className="note-tags">
-                    <span className="tag">#{note.category_name}</span>
-                  </div>
-                )}
-                <div className="note-footer">
-                  <button onClick={() => handleEdit(note)} className="icon-btn">✏️</button>
-                  <button onClick={() => handleDelete(note.id)} className="icon-btn">🗑️</button>
-                </div>
-              </div>
+              <Note key={note.id} note={note} onEdit={handleEdit} onDelete={handleDelete} />
             ))}
           </div>
         )}

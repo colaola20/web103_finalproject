@@ -2,3 +2,5 @@ FUN/backend/.env
 FUN/backend/node_modules
 FUN/frontend/node_modules
 FUN/node_modules
+node_modules
+.claude
