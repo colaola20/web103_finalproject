@@ -194,15 +194,15 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
         {/* Categories */}
         <div className='categories-section'>
           <span className="filters-label">Categories:</span>
-          <RegularButton onClick={() => setShowCategoryModal(true)}><Plus  size={14} /> Add</RegularButton>
+          <div className="category-modal-anchor">
+            <RegularButton onClick={() => setShowCategoryModal(true)}><Plus  size={14} /> Add</RegularButton>
+            <CategoryModal
+              show={showCategoryModal}
+              onClose={() => setShowCategoryModal(false)}
+              onRefreshCategories={onRefreshData}
+            />
+          </div>
         </div>
-
-        {/* Logic for Category Modal */}
-        <CategoryModal
-          show={showCategoryModal}
-          onClose={() => setShowCategoryModal(false)}
-          onRefreshCategories={onRefreshData} 
-        />
       </div>
       
 
