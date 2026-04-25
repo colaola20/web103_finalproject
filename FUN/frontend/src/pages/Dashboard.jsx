@@ -51,6 +51,7 @@ const Dashboard = () => {
         showForm={showForm}
         setShowForm={setShowForm}
         onLogout={handleLogout}
+        onRefreshData={loadData}
       />
 
       <main className="dashboard-content">

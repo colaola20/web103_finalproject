@@ -116,21 +116,13 @@ router.post("/notes", async (req, res) => {
   //user must create a category before creating a note, so we can check if the categoryID exists in the database before creating the note
   const { userID, categoryID, title, content, color } = req.body;
 
-// HERE WE HAVE TO DECIDED IF THE USER HAS TO CREATE A CATEGORY BEFORE CREATING A NOTE,
-// OR IF THEY CAN CREATE A NOTE WITHOUT A CATEGORY, AND THEN LATER ASSIGN IT TO A CATEGORY, 
-// OR IF WE CAN JUST ASSIGN IT TO A DEFAULT CATEGORY (LIKE "Uncategorized") IF THEY DON'T SPECIFY ONE. 
-// FOR NOW, I'LL ASSUME THEY HAVE TO CREATE A CATEGORY FIRST, BUT THIS CAN BE CHANGED LATER IF WE DECIDE TO ALLOW NOTES WITHOUT CATEGORIES. **
-  
   if (!userID || !categoryID || !title || !content || !color) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  // in case the frontend does not validate the categoryID,
-  // we can check if the categoryID exists in the database before creating the note,
-  // if it does not exist, we can return an error message
   try {
-    await pool.query("SELECT * FROM categories WHERE id = $1", [categoryID]);
-    if (categoryID.length === 0) {
+    const result = await pool.query("SELECT * FROM categories WHERE id = $1", [categoryID]);
+    if (result.rows.length === 0) {
       return res.status(400).json({ error: "Category does not exist" });
     }
   } catch (error) {
@@ -193,15 +185,25 @@ router.post("/categories", async (req, res) => {
   }
 
   try {
+    const existingCategory = await pool.query(
+      "SELECT * FROM categories WHERE user_id = $1 AND LOWER(name) = LOWER($2)",
+      [userID, name.trim()]
+    );
+
+    if (existingCategory.rows.length > 0) {
+      return res.status(400).json({ error: "Category already exists" });
+    }
     await pool.query("INSERT INTO categories (user_id, name) VALUES ($1, $2)", [
       userID,
-      name,
+      name.trim(),
     ]);
+
     return res.status(201).json({
       message: `Category ${name} created successfully!`,
       success: true,
     });
   } catch (error) {
+    console.error("Error creating category:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -217,6 +219,49 @@ router.delete("/categories/:id", async (req, res) => {
   ]);
   res.json({ message: "Deleted", success: true });
 });
+
+// Add this to your backend router file
+router.get("/categories/:userID", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM categories WHERE user_id = $1 ORDER BY name ASC", 
+      [req.params.userID]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Update category name
+router.put("/categories/:id", async (req, res) => {
+  const { userID, name } = req.body;
+  const { id } = req.params;
+
+  if (!userID || !name) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    const result = await pool.query(
+      "UPDATE categories SET name = $1 WHERE id = $2 AND user_id = $3 RETURNING *",
+      [name, id, userID]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Category not found or unauthorized" });
+    }
+
+    return res.json({
+      message: "Category updated successfully",
+      success: true,
+      category: result.rows[0],
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 // --- TAGS ---
 

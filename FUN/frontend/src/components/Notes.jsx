@@ -58,6 +58,9 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
     setFormError('');
 
     try {
+
+      const selectedCategoryID = formData.categoryID;
+
       const tagsArray = formData.tags
         .split(',')
         .map(tag => tag.trim())
@@ -71,8 +74,9 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
         if (matchingCategory) {
           categoryID = matchingCategory.category_id;
         } else {
-          const newCategory = await createCategory(user.userID, categoryName);
-          categoryID = newCategory.id;
+          //no creating of new category unless user make them from the category management modal
+          // const newCategory = await createCategory(user.userID, categoryName);
+          // categoryID = newCategory.id;
         }
       }
 
@@ -83,13 +87,13 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
           formData.title,
           formData.content,
           formData.color,
-          categoryID,
+          selectedCategoryID,
           formData.is_pinned
         );
       } else {
         await createNote(
           user.userID,
-          categoryID,
+          selectedCategoryID,
           formData.title,
           formData.content,
           formData.color
@@ -124,6 +128,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
       tags: note.category_name || '',
       color: note.color || '#fff3cd',
       is_pinned: note.is_pinned || false,
+      categoryID: note.category_id || '',
     });
     setShowForm(true);
   };
@@ -138,6 +143,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
       tags: '',
       color: '#fff3cd',
       is_pinned: false,
+      categoryID: null,
     });
   };
 
@@ -160,6 +166,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
         onColorChange={handleColorChange}
         onSubmit={handleSubmit}
         onClose={resetForm}
+        categories={categories}
       />
 
       {/* Filters */}

@@ -4,7 +4,7 @@ import RegularButton from './RegularButton';
 
 const COLOR_PALETTE = ['#fff3cd', '#c7e9f5', '#f5d5e0', '#d4f5e8', '#e5d7f5', '#ffe8d6', '#e8e8e8', '#ffeb99'];
 
-const AddNoteModal = ({ show, editingNote, formData, formError, onChange, onColorChange, onSubmit, onClose }) => {
+const AddNoteModal = ({ show, editingNote, formData, formError, onChange, onColorChange, onSubmit, onClose, categories }) => {
   if (!show) return null;
 
   return (
@@ -40,6 +40,24 @@ const AddNoteModal = ({ show, editingNote, formData, formError, onChange, onColo
               rows="6"
               required
             />
+          </div>
+
+         
+          <div className="form-group">
+            <label>Category</label>
+            <select 
+              name="categoryID" 
+              value={formData.categoryID || ""} 
+              onChange={onChange}
+              required
+            >
+              <option value="" disabled>Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="form-group">
