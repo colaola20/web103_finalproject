@@ -1,5 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import OpenAI from "openai";
 var router = express.Router();
 import { pool } from "../database/database.js";
 
@@ -121,7 +122,9 @@ router.post("/notes", async (req, res) => {
   }
 
   try {
-    const result = await pool.query("SELECT * FROM categories WHERE id = $1", [categoryID]);
+    const result = await pool.query("SELECT * FROM categories WHERE id = $1", [
+      categoryID,
+    ]);
     if (result.rows.length === 0) {
       return res.status(400).json({ error: "Category does not exist" });
     }
@@ -187,7 +190,7 @@ router.post("/categories", async (req, res) => {
   try {
     const existingCategory = await pool.query(
       "SELECT * FROM categories WHERE user_id = $1 AND LOWER(name) = LOWER($2)",
-      [userID, name.trim()]
+      [userID, name.trim()],
     );
 
     if (existingCategory.rows.length > 0) {
@@ -224,8 +227,8 @@ router.delete("/categories/:id", async (req, res) => {
 router.get("/categories/:userID", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM categories WHERE user_id = $1 ORDER BY name ASC", 
-      [req.params.userID]
+      "SELECT * FROM categories WHERE user_id = $1 ORDER BY name ASC",
+      [req.params.userID],
     );
     res.json(result.rows);
   } catch (error) {
@@ -245,11 +248,13 @@ router.put("/categories/:id", async (req, res) => {
   try {
     const result = await pool.query(
       "UPDATE categories SET name = $1 WHERE id = $2 AND user_id = $3 RETURNING *",
-      [name, id, userID]
+      [name, id, userID],
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Category not found or unauthorized" });
+      return res
+        .status(404)
+        .json({ error: "Category not found or unauthorized" });
     }
 
     return res.json({
@@ -261,7 +266,6 @@ router.put("/categories/:id", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 // --- TAGS ---
 
@@ -318,6 +322,50 @@ router.put("/settings/:userID", async (req, res) => {
     [theme, default_color, ai_enabled, req.params.userID],
   );
   res.json(result.rows[0]);
+});
+
+//AI feature
+router.post("/ai/transform", async (req, res) => {
+  const { userID, email, content, tone } = req.body;
+
+  try {
+    // Verify user exists and email matches
+    const userCheck = await pool.query(
+      "SELECT * FROM users WHERE id = $1 AND email = $2",
+      [userID, email],
+    );
+
+    if (userCheck.rows.length === 0) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: User verification failed" });
+    }
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    if (!content) return res.status(400).json({ error: "No content provided" });
+    if (!tone) return res.status(400).json({ error: "No tone provided" });
+    // Call OpenAI
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini", // or "gpt-3.5-turbo" for more spped
+      messages: [
+        {
+          role: "system",
+          content: `You are a helpful note-taking assistant. Rewrite the user's note to be ${tone}. 
+                    Keep the core meaning but change the style. Do not include any intro text like "Here is your note".`,
+        },
+        { role: "user", content: content },
+      ],
+    });
+
+    const aiText = completion.choices[0].message.content;
+    res.json({ aiText });
+  } catch (error) {
+    console.error("AI Error:", error);
+    res.status(500).json({ error: "AI transformation failed" });
+  }
 });
 
 export default router;

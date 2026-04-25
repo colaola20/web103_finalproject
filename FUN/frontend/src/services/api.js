@@ -82,20 +82,9 @@ export const updateSettings = async (userID, theme, default_color, ai_enabled) =
   return apiCall(`/settings/${userID}`, 'PUT', { theme, default_color, ai_enabled });
 };
 
-// Test endpoint
-export const helloWord = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/hello`);
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "API Request Failed");
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching hello word:", error);
-    throw error;
-  }
+export const transformNote = async (userID, email, content, tone) => {
+  return apiCall('/ai/transform', 'POST', { userID, email, content, tone });
 };
+
 
 
