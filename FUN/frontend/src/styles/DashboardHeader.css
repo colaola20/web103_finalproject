@@ -2,16 +2,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25px 30px;
-  background: white;
+  padding: 25px 0px;
+  background-color: #f9f9f9;
   border-bottom: 1px solid #e5e5e5;
 }
 
 .dashboard-header h1 {
   margin: 0;
   font-size: 28px;
-  color: #1a1a1a;
   font-weight: 600;
+  color: #111827; /* softer than pure black */
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.dashboard-header {
+  border-bottom: 2px solid #e5e7eb;
 }
 
 .header-actions {
