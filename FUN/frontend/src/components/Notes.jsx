@@ -7,8 +7,10 @@ import MainButton from './MainButton';
 import RegularButton from './RegularButton';
 import '../styles/Dashboard.css';
 import {ChevronDown} from "lucide-react"
+import CategoryModal from "../components/CategoryModal";
+import {FolderEdit, Plus} from "lucide-react"
 
-const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
+const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) => {
   const { user } = useAuth();
   const [notes, setNotes] = useState([]);
   const [editingNote, setEditingNote] = useState(null);
@@ -21,6 +23,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
     color: '#fff3cd',
     is_pinned: false,
   });
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   const loadNotes = async () => {
     if (!user?.userID) return;
@@ -169,22 +172,39 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
         categories={categories}
       />
 
-      {/* Filters */}
-      <div className="filters-section">
-        <span className="filters-label">Filters:</span>
-        <div className="filter-buttons">
-          {uniqueCategories.map(cat =>
-            selectedCategory === cat ? (
-              <MainButton key={cat} onClick={() => setSelectedCategory(cat)}>{cat}</MainButton>
-            ) : (
-              <RegularButton key={cat} onClick={() => setSelectedCategory(cat)}>{cat}</RegularButton>
-            )
-          )}
-          <RegularButton className="tags-btn">
-            Tags <ChevronDown size={14}/>
-          </RegularButton>
+      {/* Filters and Categories */}
+      <div className='filter-cotegories-container'>
+          {/* Filters */}
+        <div className="filters-section">
+          <span className="filters-label">Filters:</span>
+          <div className="filter-buttons">
+            {uniqueCategories.map(cat =>
+              selectedCategory === cat ? (
+                <MainButton key={cat} onClick={() => setSelectedCategory(cat)}>{cat}</MainButton>
+              ) : (
+                <RegularButton key={cat} onClick={() => setSelectedCategory(cat)}>{cat}</RegularButton>
+              )
+            )}
+            <RegularButton className="tags-btn">
+              Tags <ChevronDown size={14}/>
+            </RegularButton>
+          </div>
         </div>
+
+        {/* Categories */}
+        <div className='categories-section'>
+          <span className="filters-label">Categories:</span>
+          <RegularButton onClick={() => setShowCategoryModal(true)}><Plus  size={14} /> Add</RegularButton>
+        </div>
+
+        {/* Logic for Category Modal */}
+        <CategoryModal
+          show={showCategoryModal}
+          onClose={() => setShowCategoryModal(false)}
+          onRefreshCategories={onRefreshData} 
+        />
       </div>
+      
 
       {/* Pinned Notes Section */}
       {pinnedNotes.length > 0 && (

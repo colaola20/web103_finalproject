@@ -5,6 +5,7 @@ import Notes from '../components/Notes';
 import DashboardHeader from '../components/DashboardHeader';
 import '../styles/Dashboard.css';
 
+
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const [notes, setNotes] = useState([]);
@@ -62,6 +63,7 @@ const Dashboard = () => {
           onUpdate={loadData}
           showForm={showForm}
           setShowForm={setShowForm}
+          onRefreshData={loadData}
         />
       </main>
     </div>

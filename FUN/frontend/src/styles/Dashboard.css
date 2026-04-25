@@ -8,22 +8,30 @@
 .dashboard-content {
   flex: 1;
   overflow-y: auto;
-  padding: 30px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .notes-view {
   width: 100%;
 }
 
+
+/* Filters and Categories Section */
+.filter-cotegories-container {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0;
+}
+
 /* Filters Section */
 .filters-section {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: start;
+  width: 70%;
   gap: 15px;
-  margin-bottom: 30px;
-  margin-top: 30px;
-  padding: 15px 0;
-  border-bottom: 1px solid #ddd;
 }
 
 .filters-label {
@@ -36,6 +44,14 @@
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+/* Categories Section */
+.categories-section{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding-left: 20px;
+  border-left: 1px solid #ddd;
 }
 
 .tags-btn {
