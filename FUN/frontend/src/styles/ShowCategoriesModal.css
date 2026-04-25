@@ -1,0 +1,48 @@
+.category-modal-anchor {
+  position: relative;
+  display: inline-block;
+}
+
+.modal-content {
+  position: static;
+  margin: 6px 0;
+  left: 0;
+  z-index: 100;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  padding: 16px;
+  min-width: 260px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.category-list p {
+    color: #666666;
+    font-size: 16px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-text {
+  margin: 0 0 8px;
+  font-size: 13px;
+}

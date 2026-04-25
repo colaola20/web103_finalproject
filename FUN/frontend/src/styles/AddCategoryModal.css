@@ -3,7 +3,7 @@
   display: inline-block;
 }
 
-.modal-content {
+.add-category-modal-content {
   position: static;
   margin: 6px 0;
   left: 0;
@@ -43,13 +43,6 @@
   justify-content: center;
 }
 
-.category-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 180px;
-  overflow-y: auto;
-}
 
 .error-text {
   margin: 0 0 8px;

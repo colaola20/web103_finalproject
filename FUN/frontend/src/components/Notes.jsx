@@ -7,8 +7,9 @@ import MainButton from './MainButton';
 import RegularButton from './RegularButton';
 import '../styles/Dashboard.css';
 import {ChevronDown} from "lucide-react"
-import CategoryModal from "../components/CategoryModal";
-import {FolderEdit, Plus} from "lucide-react"
+import AddCategoryModal from "./AddCategoryModal";
+import {List, Plus} from "lucide-react"
+import ShowCategoriesModal from './ShowCategoriesModal';
 
 const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) => {
   const { user } = useAuth();
@@ -24,6 +25,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
     is_pinned: false,
   });
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showCategories, setShowCategories] = useState(false)
 
   const loadNotes = async () => {
     if (!user?.userID) return;
@@ -156,7 +158,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
 
   const pinnedNotes = filteredNotes.filter(note => note.is_pinned);
   const unpinnedNotes = filteredNotes.filter(note => !note.is_pinned);
-  const uniqueCategories = ['All', ...new Set(notes.map(note => note.category_name).filter(Boolean))];
+  const uniqueCategories = ['All', ...new Set(categories.map(cat => cat.name).filter(Boolean))];
 
   return (
     <div className="notes-view">
@@ -194,11 +196,19 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
         {/* Categories */}
         <div className='categories-section'>
           <span className="filters-label">Categories:</span>
-          <div className="category-modal-anchor">
+          <div className="category-actions">
             <RegularButton onClick={() => setShowCategoryModal(true)}><Plus  size={14} /> Add</RegularButton>
-            <CategoryModal
+            <RegularButton onClick={() => setShowCategories(true)}><List size={14}/> Show All</RegularButton>
+          </div>
+          <div className="category-modal-anchor">
+            <AddCategoryModal
               show={showCategoryModal}
               onClose={() => setShowCategoryModal(false)}
+              onRefreshCategories={onRefreshData}
+            />
+            <ShowCategoriesModal 
+              show={showCategories}
+              onClose={() => setShowCategories(false)}
               onRefreshCategories={onRefreshData}
             />
           </div>

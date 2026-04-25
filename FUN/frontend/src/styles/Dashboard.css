@@ -56,6 +56,11 @@
   gap: 5px;
 }
 
+.category-actions {
+  display: flex;
+  gap: 5px;
+}
+
 .tags-btn {
   position: relative;
 }
