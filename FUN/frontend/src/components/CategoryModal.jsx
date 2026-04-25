@@ -64,7 +64,7 @@ const CategoryModal = ({ show, onClose, onRefreshCategories }) => {
           placeholder="Work, Personal, etc."
           required
         />
-        <Check type='submit' color='#10B981' size={20}/>
+        <button type="submit" className="icon-button"><Check type='submit' color='#10B981' size={20}/></button>
         <X onClick={onClose} color='#111827' size={20}/>
       </form>
 
