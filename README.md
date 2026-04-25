@@ -29,7 +29,7 @@ Backend:    Express
 ### Baseline Features
 ✅ The web app includes an Express backend app and a React frontend app.
 
-- The web app includes dynamic routes for both frontend and backend apps.
+✅ The web app includes dynamic routes for both frontend and backend apps.
 
 - The web app is deployed on Render with all pages and features working.
 
@@ -39,14 +39,14 @@ Backend:    Express
     ✅ many-to-many with a join table (tags-categories: a tag can be in many categories and a category can use many tags)
 
 - The web app implements a well-designed RESTful API that:
-    - supports all four main request types for a single entity: GET, POST, PATCH, and DELETE
-        - the user can view items, such as notes
-        - the user can create a new item, such as a notes
-        - the user can update an existing item by changing some or all of its values, such as changing the title of note
+    ✅ supports all four main request types for a single entity: GET, POST, PATCH, and DELETE
+        ✅ the user can view items, such as notes
+        ✅ the user can create a new item, such as a notes
+        ✅ the user can update an existing item by changing some or all of its values, such as changing the title of note
         - the user can delete an existing item, such as a task
     - Implements proper naming conventions for routes.
 
-- The web app includes the ability to reset the database to its default state.
+✅ The web app includes the ability to reset the database to its default state.
 
 **Frontend Features**
 ✅ The web app implements at least one redirection, where users are able to navigate to a new page with a new URL within the app (Login -> Registration)
