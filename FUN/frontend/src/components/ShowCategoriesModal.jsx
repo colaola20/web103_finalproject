@@ -45,8 +45,13 @@ const ShowCategoriesModal = ({ show, onClose, onRefreshCategories }) => {
 
   return (
     <div className="modal-content">
-        <div className="closeBtn">
-          <X onClick={onClose} color='#666666' size={20}/>
+        <div className="modal-header">
+          <div className="title">
+            <span>Your categories:</span>
+          </div>
+          <div className="closeBtn">
+            <X onClick={onClose} color='#666666' size={20}/>
+          </div>
         </div>
         <div className="category-list">
           {error && <p className="error-text" style={{color: 'red'}}>{error}</p>}

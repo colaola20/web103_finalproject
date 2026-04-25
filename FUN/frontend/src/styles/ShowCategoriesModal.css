@@ -4,7 +4,7 @@
 }
 
 .modal-content {
-  position: static;
+  position: absolute;
   margin: 6px 0;
   left: 0;
   z-index: 100;
@@ -14,6 +14,26 @@
   padding: 16px;
   min-width: 260px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.title {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.title span {
+    color: #6b7280;
+    font-size: 18px;
+    line-height: 1.4;
+    margin: 0;
 }
 
 .category-list {
@@ -29,6 +49,12 @@
     font-size: 16px;
     line-height: 1.4;
     margin: 0;
+}
+
+.closeBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .icon-button {
