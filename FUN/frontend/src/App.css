@@ -29,5 +29,12 @@ button {
 input,
 textarea,
 select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
   font-family: inherit;
+  background: #f5f5f5;
+  color: #1a1a1a;
+
 }
