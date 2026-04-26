@@ -111,8 +111,8 @@ const AddNoteModal = ({
           <div className="form-group">
             <label>Category</label>
             <select
-              name="categoryID"
-              value={formData.categoryID || ""}
+              name="category"
+              value={formData.category || ""}
               onChange={onChange}
               required
             >

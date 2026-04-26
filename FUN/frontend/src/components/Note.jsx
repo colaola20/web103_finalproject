@@ -1,7 +1,21 @@
 import { SquarePen, Trash2 } from "lucide-react"
 import '../styles/Note.css'
+import {getNoteTags} from '../services/api'
+import {useEffect, useState} from 'react'
 
 const Note = ({ note, onEdit, onDelete }) => {
+  const [tags, setTags] = useState([])
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      const data = await getNoteTags(note.id)
+      setTags(data)
+    }
+    fetchTags()
+  }, [note.id])
+  console.log(tags)
+
+
   return (
     <div className="note-card" style={{ backgroundColor: note.color }}>
       <div className="note-header">
@@ -14,9 +28,16 @@ const Note = ({ note, onEdit, onDelete }) => {
           <span className="tag">#{note.category_name}</span>
         </div>
       )}
+      {tags.length > 0 && (
+        <div className="note-tags">
+          {tags.map(tag => (
+            <span key={tag.id} className="tag">#{tag.name}</span>
+          ))}
+        </div>
+      )}
       <div className="note-footer">
-        <button onClick={() => onEdit(note)} className="icon-btn"><SquarePen size={14} /></button>
-        <button onClick={() => onDelete(note.id)} className="icon-btn"><Trash2 size={14} /></button>
+        <button onClick={() => onEdit(note)} className="icon-btn"><SquarePen color='#666666' size={20} /></button>
+        <button onClick={() => onDelete(note.id)} className="icon-btn"><Trash2 color='#666666' size={20} /></button>
       </div>
     </div>
   );

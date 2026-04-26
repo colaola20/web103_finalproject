@@ -75,7 +75,8 @@ const resetDatabase = async () => {
       CREATE TABLE tags (
         id SERIAL PRIMARY KEY,
         user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-        name VARCHAR(255) NOT NULL
+        name VARCHAR(255) NOT NULL,
+        UNIQUE(user_id, name)
       );
     `);
 

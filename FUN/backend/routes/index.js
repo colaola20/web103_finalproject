@@ -133,13 +133,14 @@ router.post("/notes", async (req, res) => {
   }
 
   try {
-    await pool.query(
-      "INSERT INTO notes (user_id, category_id, title, content, color) VALUES ($1, $2, $3, $4, $5)",
+    const result = await pool.query(
+      "INSERT INTO notes (user_id, category_id, title, content, color) VALUES ($1, $2, $3, $4, $5) RETURNING id",
       [userID, categoryID, title, content, color],
     );
     return res.status(201).json({
       message: `Note ${title} created successfully!`,
       success: true,
+      noteID: result.rows[0].id,
     });
   } catch (error) {
     return res.status(500).json({ error: "Internal server error" });
@@ -277,16 +278,25 @@ router.post("/tags", async (req, res) => {
   }
 
   try {
-    await pool.query("INSERT INTO tags (user_id, name) VALUES ($1, $2)", [
-      userID,
-      name,
-    ]);
+    const existing = await pool.query(
+      "SELECT id FROM tags WHERE user_id = $1 AND LOWER(name) = LOWER($2)",
+      [userID, name],
+    );
+    if (existing.rows.length > 0) {
+      return res.status(200).json({ success: true, tagID: existing.rows[0].id });
+    }
+    const result = await pool.query(
+      "INSERT INTO tags (user_id, name) VALUES ($1, $2) RETURNING id",
+      [userID, name],
+    );
     return res.status(201).json({
       message: `Tag ${name} created successfully!`,
       success: true,
+      tagID: result.rows[0].id,
     });
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("Error creating tag:", error);
+    return res.status(500).json({ error: error.message });
   }
 });
 
@@ -303,6 +313,30 @@ router.post("/notes/tag", async (req, res) => {
     res.json({ message: "Tag linked to note", success: true });
   } catch (error) {
     res.status(400).json({ error: "Already tagged" });
+  }
+});
+
+router.get("/notes/:noteID/tags", async (req, res) => {
+  const { noteID } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT t.* FROM tags t
+       JOIN note_tag nt ON t.id = nt.tag_id
+       WHERE nt.note_id = $1`,
+      [noteID]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.delete("/notes/:noteID/tags", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM note_tag WHERE note_id = $1", [req.params.noteID]);
+    res.json({ message: "Tags cleared", success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

@@ -73,6 +73,14 @@ export const linkTagToNote = async (noteID, tagID) => {
   return apiCall('/notes/tag', 'POST', { noteID, tagID });
 };
 
+export const getNoteTags = async (noteID) => {
+  return apiCall(`/notes/${noteID}/tags`, 'GET');
+};
+
+export const clearNoteTags = async (noteID) => {
+  return apiCall(`/notes/${noteID}/tags`, 'DELETE');
+};
+
 // Settings Endpoints
 export const getSettings = async (userID) => {
   return apiCall(`/settings/${userID}`, 'GET');

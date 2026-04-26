@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getNotes, createNote, updateNote, deleteNote, createCategory } from '../services/api';
+import { getNotes, createNote, updateNote, deleteNote, createCategory, createTag, linkTagToNote, getNoteTags, clearNoteTags } from '../services/api';
 import AddNoteModal from './AddNoteModal';
 import Note from './Note';
 import MainButton from './MainButton';
@@ -20,13 +20,13 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
   const [formData, setFormData] = useState({
     title: '',
     content: '',
+    category: '',
     tags: '',
     color: '#fff3cd',
     is_pinned: false,
   });
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showCategories, setShowCategories] = useState(false)
-
   const loadNotes = async () => {
     if (!user?.userID) return;
     try {
@@ -63,27 +63,8 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
     setFormError('');
 
     try {
-
-      const selectedCategoryID = formData.categoryID;
-
-      const tagsArray = formData.tags
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
-
-      const categoryName = tagsArray.length > 0 ? tagsArray[0] : null;
-      let categoryID = null;
-
-      if (categoryName) {
-        const matchingCategory = notes.find(note => note.category_name === categoryName);
-        if (matchingCategory) {
-          categoryID = matchingCategory.category_id;
-        } else {
-          //no creating of new category unless user make them from the category management modal
-          // const newCategory = await createCategory(user.userID, categoryName);
-          // categoryID = newCategory.id;
-        }
-      }
+      const categoryID = formData.category;
+      let noteID;
 
       if (editingNote) {
         await updateNote(
@@ -92,18 +73,28 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
           formData.title,
           formData.content,
           formData.color,
-          selectedCategoryID,
+          categoryID,
           formData.is_pinned
         );
+        noteID = editingNote.id;
       } else {
-        await createNote(
+        const result = await createNote(
           user.userID,
-          selectedCategoryID,
+          categoryID,
           formData.title,
           formData.content,
           formData.color
         );
+        noteID = result.noteID;
       }
+
+      await clearNoteTags(noteID);
+      const tagNames = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
+      for (const name of tagNames) {
+        const tagResult = await createTag(user.userID, name);
+        await linkTagToNote(noteID, tagResult.tagID);
+      }
+
       loadNotes();
       resetForm();
       onUpdate();
@@ -125,15 +116,22 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
     }
   };
 
-  const handleEdit = (note) => {
+  const handleEdit = async (note) => {
     setEditingNote(note);
+    let tagString = '';
+    try {
+      const existing = await getNoteTags(note.id);
+      tagString = existing.map(t => t.name).join(', ');
+    } catch (err) {
+      console.error('Error loading tags:', err);
+    }
     setFormData({
       title: note.title,
       content: note.content,
-      tags: note.category_name || '',
+      category: note.category_id || '',
+      tags: tagString,
       color: note.color || '#fff3cd',
       is_pinned: note.is_pinned || false,
-      categoryID: note.category_id || '',
     });
     setShowForm(true);
   };
@@ -145,10 +143,10 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
     setFormData({
       title: '',
       content: '',
+      category: '',
       tags: '',
       color: '#fff3cd',
       is_pinned: false,
-      categoryID: null,
     });
   };
 
