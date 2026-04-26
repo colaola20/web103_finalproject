@@ -1,9 +1,9 @@
-import { SquarePen, Trash2 } from "lucide-react"
+import { SquarePen, Trash2, Pin } from "lucide-react"
 import '../styles/Note.css'
 import {getNoteTags} from '../services/api'
 import {useEffect, useState} from 'react'
 
-const Note = ({ note, onEdit, onDelete }) => {
+const Note = ({ note, onEdit, onDelete, onPin }) => {
   const [tags, setTags] = useState([])
 
   useEffect(() => {
@@ -13,14 +13,14 @@ const Note = ({ note, onEdit, onDelete }) => {
     }
     fetchTags()
   }, [note.id])
-  console.log(tags)
+  console.log(note)
 
 
   return (
     <div className="note-card" style={{ backgroundColor: note.color }}>
       <div className="note-header">
         <h3>{note.title}</h3>
-        {note.is_pinned && <span className="pin-icon">📌</span>}
+        <Pin onClick={() => onPin(note)} color={note.is_pinned ? '#3b82f6' : '#666666'} size={20} style={{ cursor: 'pointer' }} />
       </div>
       <p className="note-content">{note.content}</p>
       {tags.length > 0 && (

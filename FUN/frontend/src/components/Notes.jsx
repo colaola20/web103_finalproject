@@ -116,6 +116,15 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
     }
   };
 
+  const handlePin = async (note) => {
+    try {
+      await updateNote(note.id, user.userID, note.title, note.content, note.color, note.category_id, !note.is_pinned);
+      loadNotes();
+    } catch (err) {
+      console.error('Error pinning note:', err);
+    }
+  };
+
   const handleEdit = async (note) => {
     setEditingNote(note);
     let tagString = '';
@@ -220,7 +229,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
           <h2 className="pinned-title">📌 Pinned Notes</h2>
           <div className="notes-grid">
             {pinnedNotes.map(note => (
-              <Note key={note.id} note={note} onEdit={handleEdit} onDelete={handleDelete} />
+              <Note key={note.id} note={note} onEdit={handleEdit} onDelete={handleDelete} onPin={handlePin} />
             ))}
           </div>
         </div>
@@ -235,7 +244,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
         ) : (
           <div className="notes-grid">
             {unpinnedNotes.map(note => (
-              <Note key={note.id} note={note} onEdit={handleEdit} onDelete={handleDelete} />
+              <Note key={note.id} note={note} onEdit={handleEdit} onDelete={handleDelete} onPin={handlePin} />
             ))}
           </div>
         )}
