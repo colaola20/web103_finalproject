@@ -75,7 +75,7 @@ const AddNoteModal = ({
     <div className="modal-overlay">
       <div className="modal-dialog">
         <div className="modal-header">
-          <h2>{editingNote ? "Edit Note" : "New Note"}</h2>
+          <h2 >{editingNote ? "Edit Note" : "New Note"}</h2>
           <button className="modal-close-btn" onClick={onClose}>
             ✕
           </button>
