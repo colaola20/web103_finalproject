@@ -3,15 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "server": "cd backend && npm start",
-    "client": "cd frontend && npm run dev",
-    "reset": "cd backend && node dbReset.js",
-    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
-    "build": "cd frontend && npm run build",
-    "start": "cd backend && npm start",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
-  },
+"scripts": {
+  "install-all": "npm install && npm install --prefix backend && npm install --prefix frontend",
+  "build": "npm run build --prefix frontend",
+  "start": "npm start --prefix backend",
+  "server": "npm start --prefix backend",
+  "client": "npm run dev --prefix frontend",
+  "reset": "npm run reset --prefix backend",
+  "dev": "concurrently \"npm run server\" \"npm run client\""
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
