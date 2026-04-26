@@ -1,5 +1,5 @@
 //FUN\frontend\src\services\api.js
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "/api/data";
 
 // Helper function for API calls
 const apiCall = async (endpoint, method = 'GET', body = null) => {

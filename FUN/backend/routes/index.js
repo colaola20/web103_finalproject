@@ -1,3 +1,4 @@
+//FUN\backend\routes\index.js
 import express from "express";
 import bcrypt from "bcrypt";
 import OpenAI from "openai";
