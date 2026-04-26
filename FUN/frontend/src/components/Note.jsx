@@ -17,7 +17,7 @@ const Note = ({ note, onEdit, onDelete, onPin }) => {
 
 
   return (
-    <div className="note-card" style={{ backgroundColor: note.color }}>
+    <div className="note-card" style={{ "--note-color": note.color }}>
       <div className="note-header">
         <h3>{note.title}</h3>
         <Pin onClick={() => onPin(note)} color={note.is_pinned ? '#3b82f6' : '#666666'} size={20} style={{ cursor: 'pointer' }} />
