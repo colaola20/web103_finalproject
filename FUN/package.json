@@ -7,7 +7,7 @@
     "backend"
   ],
   "scripts": {
-    "build": "npm run build -w frontend",
+    "build": "frontend/node_modules/.bin/vite build --prefix frontend",
     "start": "npm start -w backend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "npm start -w backend",
