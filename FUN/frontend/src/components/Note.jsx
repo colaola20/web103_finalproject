@@ -23,11 +23,6 @@ const Note = ({ note, onEdit, onDelete }) => {
         {note.is_pinned && <span className="pin-icon">📌</span>}
       </div>
       <p className="note-content">{note.content}</p>
-      {note.category_name && (
-        <div className="note-tags">
-          <span className="tag">#{note.category_name}</span>
-        </div>
-      )}
       {tags.length > 0 && (
         <div className="note-tags">
           {tags.map(tag => (
