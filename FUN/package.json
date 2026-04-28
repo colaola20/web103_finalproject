@@ -7,8 +7,8 @@
     "backend"
   ],
   "scripts": {
-    "build": "npm run build -w frontend",
-    "start": "npm start -w backend",
+    "build": "npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "npm start --prefix backend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "npm start -w backend",
     "client": "npm run dev -w frontend"
