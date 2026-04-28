@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:3000";
+//FUN\frontend\src\services\api.js
+const BASE_URL = "/api/data";
 
 // Helper function for API calls
 const apiCall = async (endpoint, method = 'GET', body = null) => {
@@ -72,6 +73,14 @@ export const linkTagToNote = async (noteID, tagID) => {
   return apiCall('/notes/tag', 'POST', { noteID, tagID });
 };
 
+export const getNoteTags = async (noteID) => {
+  return apiCall(`/notes/${noteID}/tags`, 'GET');
+};
+
+export const clearNoteTags = async (noteID) => {
+  return apiCall(`/notes/${noteID}/tags`, 'DELETE');
+};
+
 // Settings Endpoints
 export const getSettings = async (userID) => {
   return apiCall(`/settings/${userID}`, 'GET');
@@ -81,20 +90,9 @@ export const updateSettings = async (userID, theme, default_color, ai_enabled) =
   return apiCall(`/settings/${userID}`, 'PUT', { theme, default_color, ai_enabled });
 };
 
-// Test endpoint
-export const helloWord = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/hello`);
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "API Request Failed");
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching hello word:", error);
-    throw error;
-  }
+export const transformNote = async (userID, email, content, tone) => {
+  return apiCall('/ai/transform', 'POST', { userID, email, content, tone });
 };
+
 
 

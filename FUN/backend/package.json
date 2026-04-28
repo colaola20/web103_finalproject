@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -12,9 +13,10 @@
     "cors": "^2.8.6",
     "debug": "~2.6.9",
     "dotenv": "^17.4.1",
-    "express": "~4.16.1",
-    "morgan": "~1.9.1",
+    "express": "^4.22.1",
+    "morgan": "^1.10.1",
     "nodemon": "^3.1.14",
+    "openai": "^6.34.0",
     "pg": "^8.20.0"
   }
 }

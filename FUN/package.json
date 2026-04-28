@@ -1,12 +1,18 @@
 {
   "name": "fun",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {   "dev": "concurrently \"npm run server\" \"npm run client\"",   "server": "cd backend && npm start",   "client": "cd frontend && npm run dev" },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "build": "npm run build -w frontend",
+    "start": "npm start -w backend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "npm start -w backend",
+    "client": "npm run dev -w frontend"
+  },
   "dependencies": {
     "concurrently": "^9.2.1"
   }

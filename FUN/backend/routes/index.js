@@ -1,5 +1,7 @@
+//FUN\backend\routes\index.js
 import express from "express";
 import bcrypt from "bcrypt";
+import OpenAI from "openai";
 var router = express.Router();
 import { pool } from "../database/database.js";
 
@@ -115,27 +117,16 @@ async function hashPassword(password) {
 router.post("/notes", async (req, res) => {
   //user must create a category before creating a note, so we can check if the categoryID exists in the database before creating the note
   const { userID, categoryID, title, content, color } = req.body;
-  console.log(userID, categoryID, title, content, color);
-  
-// HERE WE HAVE TO DECIDED IF THE USER HAS TO CREATE A CATEGORY BEFORE CREATING A NOTE,
-// OR IF THEY CAN CREATE A NOTE WITHOUT A CATEGORY, AND THEN LATER ASSIGN IT TO A CATEGORY, 
-// OR IF WE CAN JUST ASSIGN IT TO A DEFAULT CATEGORY (LIKE "Uncategorized") IF THEY DON'T SPECIFY ONE. 
-// FOR NOW, I'LL ASSUME THEY HAVE TO CREATE A CATEGORY FIRST, BUT THIS CAN BE CHANGED LATER IF WE DECIDE TO ALLOW NOTES WITHOUT CATEGORIES. **
-  
-const requiredFields = ['userID', 'categoryID', 'title', 'content', 'color'];
 
-for (const field of requiredFields) {
-  if (!req.body[field]) {
-    return res.status(400).json({ error: `Missing required field: ${field}` });
+  if (!userID || !categoryID || !title || !content || !color) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
-}
 
-  // in case the frontend does not validate the categoryID,
-  // we can check if the categoryID exists in the database before creating the note,
-  // if it does not exist, we can return an error message
   try {
-    await pool.query("SELECT * FROM categories WHERE id = $1", [categoryID]);
-    if (categoryID.length === 0) {
+    const result = await pool.query("SELECT * FROM categories WHERE id = $1", [
+      categoryID,
+    ]);
+    if (result.rows.length === 0) {
       return res.status(400).json({ error: "Category does not exist" });
     }
   } catch (error) {
@@ -143,13 +134,14 @@ for (const field of requiredFields) {
   }
 
   try {
-    await pool.query(
-      "INSERT INTO notes (user_id, category_id, title, content, color) VALUES ($1, $2, $3, $4, $5)",
+    const result = await pool.query(
+      "INSERT INTO notes (user_id, category_id, title, content, color) VALUES ($1, $2, $3, $4, $5) RETURNING id",
       [userID, categoryID, title, content, color],
     );
     return res.status(201).json({
       message: `Note ${title} created successfully!`,
       success: true,
+      noteID: result.rows[0].id,
     });
   } catch (error) {
     return res.status(500).json({ error: "Internal server error" });
@@ -199,16 +191,25 @@ router.post("/categories", async (req, res) => {
   }
 
   try {
+    const existingCategory = await pool.query(
+      "SELECT * FROM categories WHERE user_id = $1 AND LOWER(name) = LOWER($2)",
+      [userID, name.trim()],
+    );
+
+    if (existingCategory.rows.length > 0) {
+      return res.status(400).json({ error: "Category already exists" });
+    }
     await pool.query("INSERT INTO categories (user_id, name) VALUES ($1, $2)", [
       userID,
-      name,
+      name.trim(),
     ]);
+
     return res.status(201).json({
       message: `Category ${name} created successfully!`,
       success: true,
     });
   } catch (error) {
-    console.log(error.detail);
+    console.error("Error creating category:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -225,6 +226,50 @@ router.delete("/categories/:id", async (req, res) => {
   res.json({ message: "Deleted", success: true });
 });
 
+// Add this to your backend router file
+router.get("/categories/:userID", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM categories WHERE user_id = $1 ORDER BY name ASC",
+      [req.params.userID],
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Update category name
+router.put("/categories/:id", async (req, res) => {
+  const { userID, name } = req.body;
+  const { id } = req.params;
+
+  if (!userID || !name) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    const result = await pool.query(
+      "UPDATE categories SET name = $1 WHERE id = $2 AND user_id = $3 RETURNING *",
+      [name, id, userID],
+    );
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "Category not found or unauthorized" });
+    }
+
+    return res.json({
+      message: "Category updated successfully",
+      success: true,
+      category: result.rows[0],
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // --- TAGS ---
 
 router.post("/tags", async (req, res) => {
@@ -235,16 +280,25 @@ router.post("/tags", async (req, res) => {
   }
 
   try {
-    await pool.query("INSERT INTO tags (user_id, name) VALUES ($1, $2)", [
-      userID,
-      name,
-    ]);
+    const existing = await pool.query(
+      "SELECT id FROM tags WHERE user_id = $1 AND LOWER(name) = LOWER($2)",
+      [userID, name],
+    );
+    if (existing.rows.length > 0) {
+      return res.status(200).json({ success: true, tagID: existing.rows[0].id });
+    }
+    const result = await pool.query(
+      "INSERT INTO tags (user_id, name) VALUES ($1, $2) RETURNING id",
+      [userID, name],
+    );
     return res.status(201).json({
       message: `Tag ${name} created successfully!`,
       success: true,
+      tagID: result.rows[0].id,
     });
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("Error creating tag:", error);
+    return res.status(500).json({ error: error.message });
   }
 });
 
@@ -264,6 +318,30 @@ router.post("/notes/tag", async (req, res) => {
   }
 });
 
+router.get("/notes/:noteID/tags", async (req, res) => {
+  const { noteID } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT t.* FROM tags t
+       JOIN note_tag nt ON t.id = nt.tag_id
+       WHERE nt.note_id = $1`,
+      [noteID]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.delete("/notes/:noteID/tags", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM note_tag WHERE note_id = $1", [req.params.noteID]);
+    res.json({ message: "Tags cleared", success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // --- SETTINGS ---
 
 router.get("/settings/:userID", async (req, res) => {
@@ -280,6 +358,50 @@ router.put("/settings/:userID", async (req, res) => {
     [theme, default_color, ai_enabled, req.params.userID],
   );
   res.json(result.rows[0]);
+});
+
+//AI feature
+router.post("/ai/transform", async (req, res) => {
+  const { userID, email, content, tone } = req.body;
+
+  try {
+    // Verify user exists and email matches
+    const userCheck = await pool.query(
+      "SELECT * FROM users WHERE id = $1 AND email = $2",
+      [userID, email],
+    );
+
+    if (userCheck.rows.length === 0) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: User verification failed" });
+    }
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    if (!content) return res.status(400).json({ error: "No content provided" });
+    if (!tone) return res.status(400).json({ error: "No tone provided" });
+    // Call OpenAI
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini", // or "gpt-3.5-turbo" for more spped
+      messages: [
+        {
+          role: "system",
+          content: `You are a helpful note-taking assistant. Rewrite the user's note to be ${tone}. 
+                    Keep the core meaning but change the style. Do not include any intro text like "Here is your note".`,
+        },
+        { role: "user", content: content },
+      ],
+    });
+
+    const aiText = completion.choices[0].message.content;
+    res.json({ aiText });
+  } catch (error) {
+    console.error("AI Error:", error);
+    res.status(500).json({ error: "AI transformation failed" });
+  }
 });
 
 export default router;

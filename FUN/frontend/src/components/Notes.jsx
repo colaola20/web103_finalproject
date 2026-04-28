@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getNotes, createNote, updateNote, deleteNote, createCategory } from '../services/api';
+import { getNotes, createNote, updateNote, deleteNote, createCategory, createTag, linkTagToNote, getNoteTags, clearNoteTags } from '../services/api';
 import AddNoteModal from './AddNoteModal';
+import Note from './Note';
+import MainButton from './MainButton';
+import RegularButton from './RegularButton';
 import '../styles/Dashboard.css';
 import {ChevronDown} from "lucide-react"
+import AddCategoryModal from "./AddCategoryModal";
+import {List, Plus} from "lucide-react"
+import ShowCategoriesModal from './ShowCategoriesModal';
 
-const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
+const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) => {
   const { user } = useAuth();
   const [notes, setNotes] = useState([]);
   const [editingNote, setEditingNote] = useState(null);
@@ -14,11 +20,13 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
+    category: '',
     tags: '',
     color: '#fff3cd',
     is_pinned: false,
   });
-
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showCategories, setShowCategories] = useState(false)
   const loadNotes = async () => {
     if (!user?.userID) return;
     try {
@@ -55,24 +63,8 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
     setFormError('');
 
     try {
-      // Extract first tag as category
-      const tagsArray = formData.tags
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
-
-      const categoryName = tagsArray.length > 0 ? tagsArray[0] : null;
-      let categoryID = null;
-
-      if (categoryName) {
-        const matchingCategory = notes.find(note => note.category_name === categoryName);
-        if (matchingCategory) {
-          categoryID = matchingCategory.category_id;
-        } else {
-          const newCategory = await createCategory(user.userID, categoryName);
-          categoryID = newCategory.id;
-        }
-      }
+      const categoryID = formData.category;
+      let noteID;
 
       if (editingNote) {
         await updateNote(
@@ -84,20 +76,25 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
           categoryID,
           formData.is_pinned
         );
+        noteID = editingNote.id;
       } else {
-        console.log(user.userID,
-          categoryID,
-          formData.title,
-          formData.content,
-          formData.color);
-        await createNote(
+        const result = await createNote(
           user.userID,
           categoryID,
           formData.title,
           formData.content,
           formData.color
         );
+        noteID = result.noteID;
       }
+
+      await clearNoteTags(noteID);
+      const tagNames = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
+      for (const name of tagNames) {
+        const tagResult = await createTag(user.userID, name);
+        await linkTagToNote(noteID, tagResult.tagID);
+      }
+
       loadNotes();
       resetForm();
       onUpdate();
@@ -119,12 +116,29 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
     }
   };
 
-  const handleEdit = (note) => {
+  const handlePin = async (note) => {
+    try {
+      await updateNote(note.id, user.userID, note.title, note.content, note.color, note.category_id, !note.is_pinned);
+      loadNotes();
+    } catch (err) {
+      console.error('Error pinning note:', err);
+    }
+  };
+
+  const handleEdit = async (note) => {
     setEditingNote(note);
+    let tagString = '';
+    try {
+      const existing = await getNoteTags(note.id);
+      tagString = existing.map(t => t.name).join(', ');
+    } catch (err) {
+      console.error('Error loading tags:', err);
+    }
     setFormData({
       title: note.title,
       content: note.content,
-      tags: note.category_name || '',
+      category: note.category_id || '',
+      tags: tagString,
       color: note.color || '#fff3cd',
       is_pinned: note.is_pinned || false,
     });
@@ -138,20 +152,20 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
     setFormData({
       title: '',
       content: '',
+      category: '',
       tags: '',
       color: '#fff3cd',
       is_pinned: false,
     });
   };
-  // Filter notes based on selected category
+
   const filteredNotes = selectedCategory === 'All'
     ? notes
     : notes.filter(note => note.category_name === selectedCategory);
 
   const pinnedNotes = filteredNotes.filter(note => note.is_pinned);
   const unpinnedNotes = filteredNotes.filter(note => !note.is_pinned);
-  // Get unique categories for filter buttons
-  const uniqueCategories = ['All', ...new Set(notes.map(note => note.category_name).filter(Boolean))];
+  const uniqueCategories = ['All', ...new Set(categories.map(cat => cat.name).filter(Boolean))];
 
   return (
     <div className="notes-view">
@@ -164,26 +178,50 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
         onColorChange={handleColorChange}
         onSubmit={handleSubmit}
         onClose={resetForm}
+        categories={categories}
       />
 
-      {/* Filters */}
-      <div className="filters-section">
-        <span className="filters-label">Filters:</span>
-        <div className="filter-buttons">
-          {uniqueCategories.map(cat => (
-            <button
-              key={cat}
-              className={`filter-btn ${selectedCategory === cat ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-          <button className="filter-btn tags-btn">
-            Tags <ChevronDown size={14}/>
-          </button>
+      {/* Filters and Categories */}
+      <div className='filter-cotegories-container'>
+          {/* Filters */}
+        <div className="filters-section">
+          <span className="filters-label">Filters:</span>
+          <div className="filter-buttons">
+            {uniqueCategories.map(cat =>
+              selectedCategory === cat ? (
+                <MainButton key={cat} onClick={() => setSelectedCategory(cat)}>{cat}</MainButton>
+              ) : (
+                <RegularButton key={cat} onClick={() => setSelectedCategory(cat)}>{cat}</RegularButton>
+              )
+            )}
+            <RegularButton className="tags-btn">
+              Tags <ChevronDown size={14}/>
+            </RegularButton>
+          </div>
+        </div>
+
+        {/* Categories */}
+        <div className='categories-section'>
+          <span className="filters-label">Categories:</span>
+          <div className="category-actions">
+            <RegularButton onClick={() => setShowCategoryModal(true)}><Plus  size={14} /> Add</RegularButton>
+            <RegularButton onClick={() => setShowCategories(true)}><List size={14}/> Show All</RegularButton>
+          </div>
+          <div className="category-modal-anchor">
+            <AddCategoryModal
+              show={showCategoryModal}
+              onClose={() => setShowCategoryModal(false)}
+              onRefreshCategories={onRefreshData}
+            />
+            <ShowCategoriesModal 
+              show={showCategories}
+              onClose={() => setShowCategories(false)}
+              onRefreshCategories={onRefreshData}
+            />
+          </div>
         </div>
       </div>
+      
 
       {/* Pinned Notes Section */}
       {pinnedNotes.length > 0 && (
@@ -191,22 +229,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
           <h2 className="pinned-title">📌 Pinned Notes</h2>
           <div className="notes-grid">
             {pinnedNotes.map(note => (
-              <div key={note.id} className="note-card" style={{ backgroundColor: note.color }}>
-                <div className="note-header">
-                  <h3>{note.title}</h3>
-                  <span className="pin-icon">📌</span>
-                </div>
-                <p className="note-content">{note.content}</p>
-                {note.category_name && (
-                  <div className="note-tags">
-                    <span className="tag">#{note.category_name}</span>
-                  </div>
-                )}
-                <div className="note-footer">
-                  <button onClick={() => handleEdit(note)} className="icon-btn">✏️</button>
-                  <button onClick={() => handleDelete(note.id)} className="icon-btn">🗑️</button>
-                </div>
-              </div>
+              <Note key={note.id} note={note} onEdit={handleEdit} onDelete={handleDelete} onPin={handlePin} />
             ))}
           </div>
         </div>
@@ -221,21 +244,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
         ) : (
           <div className="notes-grid">
             {unpinnedNotes.map(note => (
-              <div key={note.id} className="note-card" style={{ backgroundColor: note.color }}>
-                <div className="note-header">
-                  <h3>{note.title}</h3>
-                </div>
-                <p className="note-content">{note.content}</p>
-                {note.category_name && (
-                  <div className="note-tags">
-                    <span className="tag">#{note.category_name}</span>
-                  </div>
-                )}
-                <div className="note-footer">
-                  <button onClick={() => handleEdit(note)} className="icon-btn">✏️</button>
-                  <button onClick={() => handleDelete(note.id)} className="icon-btn">🗑️</button>
-                </div>
-              </div>
+              <Note key={note.id} note={note} onEdit={handleEdit} onDelete={handleDelete} onPin={handlePin} />
             ))}
           </div>
         )}
