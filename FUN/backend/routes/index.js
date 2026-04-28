@@ -115,15 +115,20 @@ async function hashPassword(password) {
 router.post("/notes", async (req, res) => {
   //user must create a category before creating a note, so we can check if the categoryID exists in the database before creating the note
   const { userID, categoryID, title, content, color } = req.body;
-
+  console.log(userID, categoryID, title, content, color);
+  
 // HERE WE HAVE TO DECIDED IF THE USER HAS TO CREATE A CATEGORY BEFORE CREATING A NOTE,
 // OR IF THEY CAN CREATE A NOTE WITHOUT A CATEGORY, AND THEN LATER ASSIGN IT TO A CATEGORY, 
 // OR IF WE CAN JUST ASSIGN IT TO A DEFAULT CATEGORY (LIKE "Uncategorized") IF THEY DON'T SPECIFY ONE. 
 // FOR NOW, I'LL ASSUME THEY HAVE TO CREATE A CATEGORY FIRST, BUT THIS CAN BE CHANGED LATER IF WE DECIDE TO ALLOW NOTES WITHOUT CATEGORIES. **
   
-  if (!userID || !categoryID || !title || !content || !color) {
-    return res.status(400).json({ error: "Missing required fields" });
+const requiredFields = ['userID', 'categoryID', 'title', 'content', 'color'];
+
+for (const field of requiredFields) {
+  if (!req.body[field]) {
+    return res.status(400).json({ error: `Missing required field: ${field}` });
   }
+}
 
   // in case the frontend does not validate the categoryID,
   // we can check if the categoryID exists in the database before creating the note,
@@ -187,6 +192,7 @@ router.delete("/notes/:id", async (req, res) => {
 //create category endpoint
 router.post("/categories", async (req, res) => {
   const { userID, name } = req.body;
+  console.log(userID, name);
 
   if (!userID || !name) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -202,6 +208,7 @@ router.post("/categories", async (req, res) => {
       success: true,
     });
   } catch (error) {
+    console.log(error.detail);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

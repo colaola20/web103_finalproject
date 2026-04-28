@@ -85,6 +85,11 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm }) => {
           formData.is_pinned
         );
       } else {
+        console.log(user.userID,
+          categoryID,
+          formData.title,
+          formData.content,
+          formData.color);
         await createNote(
           user.userID,
           categoryID,
