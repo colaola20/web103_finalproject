@@ -32,19 +32,20 @@ Backend:    Express
 ✅ The web app includes dynamic routes for both frontend and backend apps.
 
 ✅ The web app is deployed on Render with all pages and features working.
+✅ The web app is deployed on Render with all pages and features working.
 
 **Backend Features**
 ✅ The web app implements at least one of each of the following database relationship in Postgres:
     ✅ one-to-many (user-notes: a user can have many notes, but each note belongs to one user)
     ✅ many-to-many with a join table (tags-categories: a tag can be in many categories and a category can use many tags)
 
-✅The web app implements a well-designed RESTful API that:
+- The web app implements a well-designed RESTful API that:
     ✅ supports all four main request types for a single entity: GET, POST, PATCH, and DELETE
         ✅ the user can view items, such as notes
         ✅ the user can create a new item, such as a notes
         ✅ the user can update an existing item by changing some or all of its values, such as changing the title of note
-        ✅ the user can delete an existing item, such as a task
-    ✅Implements proper naming conventions for routes.
+        ✅ the user can delete an existing item, such as a categories/notes
+    ✅ Implements proper naming conventions for routes.
 
 ✅ The web app includes the ability to reset the database to its default state.
 
@@ -54,10 +55,10 @@ Backend:    Express
 https://github.com/user-attachments/assets/cc5ed96b-e635-413f-b6ed-8ac31498f60f
 
 
-✅ The web app implements at least one interaction that the user can initiate and complete on the same page without navigating to a new page. (Add Note)
+✅ The web app implements at least one interaction that the user can initiate and complete on the same page without navigating to a new page. (Add/Edit Note)
 
 
-- The web app uses dynamic frontend routes created with React Router.
+✅ The web app uses dynamic frontend routes created with React Router.
 
 ✅ The web app uses hierarchically designed React components:
     ✅ Components are broken down into categories, including page and component types.
@@ -79,7 +80,7 @@ https://github.com/user-attachments/assets/72fc76ed-f51f-4654-8566-8d72e1919d55
 https://github.com/user-attachments/assets/e29e2bdc-823d-4c9f-83f6-7d398cafd1d0
 
 
-- The user can filter or sort items based on particular criteria as appropriate for your use case. (users can filter notes using categories and tags)
+✅ The user can filter or sort items based on particular criteria as appropriate for your use case. (users can filter notes using categories)
 
 ✅ Data submitted via a POST or PATCH request is validated before the database is updated (Password validation)
 
@@ -88,7 +89,7 @@ https://github.com/user-attachments/assets/1359b054-3f5e-4ffe-b921-6bf66f41382e
 
 ### [Full CRUD Functionality]
 
-Users can seamlessly create new notes, view them in a gallery or list format, update content in real-time, and delete notes they no longer need.
+✅ Users can seamlessly create new notes, view them in a gallery or list format, update content in real-time, and delete notes they no longer need.
 
 ### [Dynamic Categorization]
 
@@ -97,7 +98,7 @@ Users can seamlessly create new notes, view them in a gallery or list format, up
 
 ### [Pinned Favorites]
 
-The ability to "pin" important notes to the top of the dashboard so that high priority information is never buried.
+✅ The ability to "pin" important notes to the top of the dashboard so that high priority information is never buried.
 
 ### [Color-Coded Customization]
 
@@ -110,11 +111,8 @@ A "Magic Wand" tool that instantly corrects grammar, spelling, and punctuation e
 
 ### [Tone Shifter]
 
-Allows users to rewrite a note in a different tone transforming a casual brainstorm into a professional email draft or a formal set of instructions.
+✅ Allows users to rewrite a note in a different tone transforming a casual brainstorm into a professional email draft or a formal set of instructions.
 
-## Installation Instructions
-
-Follow these steps to set up the Note Board development environment on your local machine.
 
 ### Stretch Features
 ✅ A subset of pages require the user to log in before accessing the content.
@@ -122,6 +120,10 @@ Follow these steps to set up the Note Board development environment on your loca
 
 https://github.com/user-attachments/assets/f448133e-12b8-4423-bf67-09256f2dda69
 
+
+## Installation Instructions
+
+Follow these steps to set up the Note Board development environment on your local machine.
 
 📋 Prerequisites
 Ensure you have the following installed:

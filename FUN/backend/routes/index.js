@@ -116,7 +116,7 @@ async function hashPassword(password) {
 // ***NOTE: user must create a category before creating a note ***
 router.post("/notes", async (req, res) => {
   //user must create a category before creating a note, so we can check if the categoryID exists in the database before creating the note
-  const { userID, categoryID, title, content, color } = req.body;
+  const { userID, categoryID, title, content, color, is_pinned } = req.body;
 
   if (!userID || !categoryID || !title || !content || !color) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -135,8 +135,8 @@ router.post("/notes", async (req, res) => {
 
   try {
     const result = await pool.query(
-      "INSERT INTO notes (user_id, category_id, title, content, color) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-      [userID, categoryID, title, content, color],
+      "INSERT INTO notes (user_id, category_id, title, content, color, is_pinned) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+      [userID, categoryID, title, content, color, is_pinned ?? false],
     );
     return res.status(201).json({
       message: `Note ${title} created successfully!`,
@@ -337,6 +337,18 @@ router.delete("/notes/:noteID/tags", async (req, res) => {
   try {
     await pool.query("DELETE FROM note_tag WHERE note_id = $1", [req.params.noteID]);
     res.json({ message: "Tags cleared", success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/tags/:userID", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM tags WHERE user_id = $1 ORDER BY name ASC",
+      [req.params.userID]
+    );
+    res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
