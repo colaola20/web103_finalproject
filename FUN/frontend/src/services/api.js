@@ -81,6 +81,10 @@ export const clearNoteTags = async (noteID) => {
   return apiCall(`/notes/${noteID}/tags`, 'DELETE');
 };
 
+export const getUserTags = async (userID) => {
+  return apiCall(`/tags/${userID}`, 'GET');
+};
+
 // Settings Endpoints
 export const getSettings = async (userID) => {
   return apiCall(`/settings/${userID}`, 'GET');

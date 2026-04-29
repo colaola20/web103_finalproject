@@ -340,6 +340,18 @@ router.delete("/notes/:noteID/tags", async (req, res) => {
   }
 });
 
+router.get("/tags/:userID", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM tags WHERE user_id = $1 ORDER BY name ASC",
+      [req.params.userID]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // --- SETTINGS ---
 
 router.get("/settings/:userID", async (req, res) => {

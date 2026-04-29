@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getNotes, createNote, updateNote, deleteNote, createCategory, createTag, linkTagToNote, getNoteTags, clearNoteTags } from '../services/api';
+import { getNotes, createNote, updateNote, deleteNote, createCategory, createTag, linkTagToNote, getNoteTags, clearNoteTags, getUserTags } from '../services/api';
 import AddNoteModal from './AddNoteModal';
 import Note from './Note';
 import MainButton from './MainButton';
 import RegularButton from './RegularButton';
 import '../styles/Dashboard.css';
-import {ChevronDown} from "lucide-react"
+import {ChevronDown, X} from "lucide-react"
 import AddCategoryModal from "./AddCategoryModal";
 import {List, Plus} from "lucide-react"
 import ShowCategoriesModal from './ShowCategoriesModal';
@@ -26,23 +26,70 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
     is_pinned: false,
   });
   const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const [showCategories, setShowCategories] = useState(false)
+  const [showCategories, setShowCategories] = useState(false);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [allUserTags, setAllUserTags] = useState([]);
+  const [noteTagsMap, setNoteTagsMap] = useState({});
+  const [showTagDropdown, setShowTagDropdown] = useState(false);
+  const tagDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (tagDropdownRef.current && !tagDropdownRef.current.contains(e.target)) {
+        setShowTagDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const loadNotes = async () => {
     if (!user?.userID) return;
     try {
       const data = await getNotes(user.userID);
       setNotes(data);
+      if (data.length > 0) {
+        const tagArrays = await Promise.all(data.map(n => getNoteTags(n.id)));
+        const map = {};
+        data.forEach((note, i) => { map[note.id] = tagArrays[i]; });
+        setNoteTagsMap(map);
+      }
     } catch (err) {
       console.error('Error loading notes:', err);
+    }
+  };
+
+  const loadUserTags = async () => {
+    if (!user?.userID) return;
+    try {
+      const tags = await getUserTags(user.userID);
+      setAllUserTags(tags);
+    } catch (err) {
+      console.error('Error loading user tags:', err);
     }
   };
 
   useEffect(() => {
     if (!user?.userID) return;
     let cancelled = false;
-    getNotes(user.userID)
-      .then(data => { if (!cancelled) setNotes(data); })
-      .catch(err => console.error('Error loading notes:', err));
+    const load = async () => {
+      const [data, tags] = await Promise.all([
+        getNotes(user.userID),
+        getUserTags(user.userID),
+      ]);
+      if (cancelled) return;
+      setNotes(data);
+      setAllUserTags(tags);
+      if (data.length > 0) {
+        const tagArrays = await Promise.all(data.map(n => getNoteTags(n.id)));
+        if (!cancelled) {
+          const map = {};
+          data.forEach((note, i) => { map[note.id] = tagArrays[i]; });
+          setNoteTagsMap(map);
+        }
+      }
+    };
+    load().catch(err => console.error('Error loading data:', err));
     return () => { cancelled = true; };
   }, [user?.userID]);
 
@@ -96,7 +143,8 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
         await linkTagToNote(noteID, tagResult.tagID);
       }
 
-      loadNotes();
+      await loadNotes();
+      await loadUserTags();
       resetForm();
       onUpdate();
     } catch (err) {
@@ -160,9 +208,22 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
     });
   };
 
-  const filteredNotes = selectedCategory === 'All'
+  const toggleTag = (tagName) => {
+    setSelectedTags(prev =>
+      prev.includes(tagName) ? prev.filter(t => t !== tagName) : [...prev, tagName]
+    );
+  };
+
+  const filteredByCategory = selectedCategory === 'All'
     ? notes
     : notes.filter(note => note.category_name === selectedCategory);
+
+  const filteredNotes = selectedTags.length === 0
+    ? filteredByCategory
+    : filteredByCategory.filter(note => {
+        const noteTags = (noteTagsMap[note.id] || []).map(t => t.name);
+        return selectedTags.every(tag => noteTags.includes(tag));
+      });
 
   const pinnedNotes = filteredNotes.filter(note => note.is_pinned);
   const unpinnedNotes = filteredNotes.filter(note => !note.is_pinned);
@@ -195,10 +256,54 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
                 <RegularButton key={cat} onClick={() => setSelectedCategory(cat)}>{cat}</RegularButton>
               )
             )}
-            <RegularButton className="tags-btn">
-              Tags <ChevronDown size={14}/>
-            </RegularButton>
+            <div className="tag-filter-wrapper" ref={tagDropdownRef}>
+              <RegularButton
+                className={selectedTags.length > 0 ? 'tag-btn-active' : ''}
+                onClick={() => setShowTagDropdown(prev => !prev)}
+              >
+                Tags
+                {selectedTags.length > 0 && <span className="tag-count">{selectedTags.length}</span>}
+                <ChevronDown size={14} />
+              </RegularButton>
+
+              {showTagDropdown && (
+                <div className="tag-dropdown">
+                  {allUserTags.length === 0 ? (
+                    <p className="tag-dropdown-empty">No tags yet</p>
+                  ) : (
+                    allUserTags.map(tag => (
+                      <label key={tag.id} className="tag-dropdown-item">
+                        <input
+                          type="checkbox"
+                          checked={selectedTags.includes(tag.name)}
+                          onChange={() => toggleTag(tag.name)}
+                        />
+                        #{tag.name}
+                      </label>
+                    ))
+                  )}
+                  {selectedTags.length > 0 && (
+                    <button className="tag-clear-all-btn" onClick={() => setSelectedTags([])}>
+                      Clear all
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
+
+          {selectedTags.length > 0 && (
+            <div className="active-tag-chips">
+              {selectedTags.map(tag => (
+                <span key={tag} className="active-tag-chip">
+                  #{tag}
+                  <button className="chip-remove" onClick={() => toggleTag(tag)}>
+                    <X size={12} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Categories */}
