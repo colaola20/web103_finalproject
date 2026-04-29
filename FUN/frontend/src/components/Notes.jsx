@@ -83,7 +83,8 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
           categoryID,
           formData.title,
           formData.content,
-          formData.color
+          formData.color,
+          formData.is_pinned
         );
         noteID = result.noteID;
       }
