@@ -23,7 +23,7 @@ const Login = () => {
 
     try {
       const response = await loginAPI(formData.email, formData.password);
-      login(response.userID, response.username, formData.email);
+      login(response.token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);

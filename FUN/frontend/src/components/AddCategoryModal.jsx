@@ -5,7 +5,6 @@ import '../styles/AddCategoryModal.css'
 import {X, Check} from "lucide-react"
 
 const AddCategoryModal = ({ show, onClose, onRefreshCategories }) => {
-  const { user } = useAuth();
   const [newCategoryName, setNewCategoryName] = useState('');
   const [error, setError] = useState('');
 
@@ -13,7 +12,7 @@ const AddCategoryModal = ({ show, onClose, onRefreshCategories }) => {
     e.preventDefault();
     setError('');
     try {
-      await createCategory(user.userID, newCategoryName);
+      await createCategory(newCategoryName);
       setNewCategoryName('');
       onRefreshCategories();
     } catch (err) {

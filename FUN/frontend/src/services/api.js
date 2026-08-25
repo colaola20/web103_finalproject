@@ -1,13 +1,20 @@
-//FUN\frontend\src\services\api.js
+// FUN/frontend/src/services/api.js
 const BASE_URL = "/api/data";
 
-// Helper function for API calls
-const apiCall = async (endpoint, method = 'GET', body = null) => {
+const apiCall = async (endpoint, method = "GET", body = null) => {
+  const token = localStorage.getItem("token");
+
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const options = {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
   };
 
   if (body) {
@@ -21,78 +28,88 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
     throw new Error(error.error || `API Error: ${response.status}`);
   }
 
-  const data = await response.json();
-  return data;
+  return await response.json();
 };
 
-// Authentication Endpoints
+// Authentication
 export const register = async (username, email, password) => {
-  return apiCall('/register', 'POST', { username, email, password });
+  return apiCall("/register", "POST", { username, email, password });
 };
 
 export const login = async (email, password) => {
-  return apiCall('/login', 'POST', { email, password });
+  return apiCall("/login", "POST", { email, password });
 };
 
-// Categories Endpoints
-export const getCategories = async (userID) => {
-  return apiCall(`/categories/${userID}`, 'GET');
+// Categories
+export const getCategories = async () => {
+  return apiCall("/categories", "GET");
 };
 
-export const createCategory = async (userID, name) => {
-  return apiCall('/categories', 'POST', { userID, name });
+export const createCategory = async (name) => {
+  return apiCall("/categories", "POST", {name });
 };
 
-export const deleteCategory = async (categoryID, userID) => {
-  return apiCall(`/categories/${categoryID}`, 'DELETE', { userID });
+export const deleteCategory = async (categoryID) => {
+  return apiCall(`/categories/${categoryID}`, "DELETE");
 };
 
-// Notes Endpoints
-export const getNotes = async (userID) => {
-  return apiCall(`/notes/${userID}`, 'GET');
+// Notes
+export const getNotes = async () => {
+  return apiCall("/notes", "GET");
 };
 
-export const createNote = async (userID, categoryID, title, content, color) => {
-  return apiCall('/notes', 'POST', { userID, categoryID, title, content, color });
+export const createNote = async (categoryID, title, content, color) => {
+  return apiCall("/notes", "POST", { categoryID, title, content, color });
 };
 
-export const updateNote = async (noteID, userID, title, content, color, categoryID, is_pinned) => {
-  return apiCall(`/notes/${noteID}`, 'PUT', { userID, title, content, color, categoryID, is_pinned });
+export const updateNote = async (
+  noteID,
+  title,
+  content,
+  color,
+  categoryID,
+  is_pinned,
+) => {
+  return apiCall(`/notes/${noteID}`, "PUT", {
+    title,
+    content,
+    color,
+    categoryID,
+    is_pinned,
+  });
 };
 
-export const deleteNote = async (noteID, userID) => {
-  return apiCall(`/notes/${noteID}`, 'DELETE', { userID });
+export const deleteNote = async (noteID) => {
+  return apiCall(`/notes/${noteID}`, "DELETE");
 };
 
-// Tags Endpoints
-export const createTag = async (userID, name) => {
-  return apiCall('/tags', 'POST', { userID, name });
+// Tags
+export const createTag = async (name) => {
+  return apiCall("/tags", "POST", { name });
 };
 
 export const linkTagToNote = async (noteID, tagID) => {
-  return apiCall('/notes/tag', 'POST', { noteID, tagID });
+  return apiCall("/notes/tag", "POST", { noteID, tagID });
 };
 
 export const getNoteTags = async (noteID) => {
-  return apiCall(`/notes/${noteID}/tags`, 'GET');
+  return apiCall(`/notes/${noteID}/tags`, "GET");
 };
 
 export const clearNoteTags = async (noteID) => {
-  return apiCall(`/notes/${noteID}/tags`, 'DELETE');
+  return apiCall(`/notes/${noteID}/tags`, "DELETE");
 };
 
-// Settings Endpoints
-export const getSettings = async (userID) => {
-  return apiCall(`/settings/${userID}`, 'GET');
+// Settings
+export const getSettings = async () => {
+  return apiCall("/settings", "GET");
 };
 
-export const updateSettings = async (userID, theme, default_color, ai_enabled) => {
-  return apiCall(`/settings/${userID}`, 'PUT', { theme, default_color, ai_enabled });
+export const updateSettings = async (theme, default_color, ai_enabled) => {
+  return apiCall("/settings", "PUT", { theme, default_color, ai_enabled });
 };
 
-export const transformNote = async (userID, email, content, tone) => {
-  return apiCall('/ai/transform', 'POST', { userID, email, content, tone });
+// AI
+export const transformNote = async (content, tone) => {
+  return apiCall("/ai/transform", "POST", { content, tone });
 };
-
-
-

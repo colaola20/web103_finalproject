@@ -13,7 +13,7 @@ const Note = ({ note, onEdit, onDelete, onPin }) => {
     }
     fetchTags()
   }, [note.id])
-  console.log(note)
+  
 
 
   return (

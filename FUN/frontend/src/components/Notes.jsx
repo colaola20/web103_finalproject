@@ -12,7 +12,7 @@ import {List, Plus} from "lucide-react"
 import ShowCategoriesModal from './ShowCategoriesModal';
 
 const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) => {
-  const { user } = useAuth();
+  const { token } = useAuth();
   const [notes, setNotes] = useState([]);
   const [editingNote, setEditingNote] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -28,9 +28,9 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showCategories, setShowCategories] = useState(false)
   const loadNotes = async () => {
-    if (!user?.userID) return;
+    if (!token) return;
     try {
-      const data = await getNotes(user.userID);
+      const data = await getNotes();
       setNotes(data);
     } catch (err) {
       console.error('Error loading notes:', err);
@@ -38,13 +38,13 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
   };
 
   useEffect(() => {
-    if (!user?.userID) return;
+    if (!token) return;
     let cancelled = false;
-    getNotes(user.userID)
+    getNotes()
       .then(data => { if (!cancelled) setNotes(data); })
-      .catch(err => console.error('Error loading notes:', err));
+      .catch(err => console.error('Error loading notes:'));
     return () => { cancelled = true; };
-  }, [user?.userID]);
+  }, [token]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -69,7 +69,6 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
       if (editingNote) {
         await updateNote(
           editingNote.id,
-          user.userID,
           formData.title,
           formData.content,
           formData.color,
@@ -79,7 +78,6 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
         noteID = editingNote.id;
       } else {
         const result = await createNote(
-          user.userID,
           categoryID,
           formData.title,
           formData.content,
@@ -91,7 +89,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
       await clearNoteTags(noteID);
       const tagNames = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
       for (const name of tagNames) {
-        const tagResult = await createTag(user.userID, name);
+        const tagResult = await createTag(name);
         await linkTagToNote(noteID, tagResult.tagID);
       }
 
@@ -99,7 +97,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
       resetForm();
       onUpdate();
     } catch (err) {
-      console.error('Error saving note:', err);
+      console.error('Error saving note:');
       setFormError(err.message || 'Error saving note');
     }
   };
@@ -107,7 +105,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
   const handleDelete = async (noteID) => {
     if (window.confirm('Delete this note?')) {
       try {
-        await deleteNote(noteID, user.userID);
+        await deleteNote(noteID);
         loadNotes();
         onUpdate();
       } catch (err) {
@@ -118,7 +116,7 @@ const Notes = ({ categories, onUpdate, showForm, setShowForm, onRefreshData }) =
 
   const handlePin = async (note) => {
     try {
-      await updateNote(note.id, user.userID, note.title, note.content, note.color, note.category_id, !note.is_pinned);
+      await updateNote(note.id, note.title, note.content, note.color, note.category_id, !note.is_pinned);
       loadNotes();
     } catch (err) {
       console.error('Error pinning note:', err);

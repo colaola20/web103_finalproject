@@ -41,7 +41,7 @@ const AddNoteModal = ({
   onClose,
   categories,
 }) => {
-  const { user } = useAuth();
+  const { token } = useAuth();
   const [selectedTone, setSelectedTone] = useState(TONES[0]);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiPreview, setAiPreview] = useState(null);
@@ -50,12 +50,7 @@ const AddNoteModal = ({
     if (!formData.content) return alert("Write some content first!");
     setAiLoading(true);
     try {
-      const data = await transformNote(
-        user?.userID,
-        user?.email,
-        formData.content,
-        selectedTone,
-      );
+      const data = await transformNote(formData.content, selectedTone);
       setAiPreview(data.aiText);
     } catch (err) {
       alert("AI Error: " + err.message);
@@ -75,7 +70,7 @@ const AddNoteModal = ({
     <div className="modal-overlay">
       <div className="modal-dialog">
         <div className="modal-header">
-          <h2 >{editingNote ? "Edit Note" : "New Note"}</h2>
+          <h2>{editingNote ? "Edit Note" : "New Note"}</h2>
           <button className="modal-close-btn" onClick={onClose}>
             ✕
           </button>

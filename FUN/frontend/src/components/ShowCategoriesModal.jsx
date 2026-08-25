@@ -5,19 +5,19 @@ import '../styles/ShowCategoriesModal.css';
 import {X, Trash2} from 'lucide-react'
 
 const ShowCategoriesModal = ({ show, onClose, onRefreshCategories }) => {
-  const { user } = useAuth();
+  const { token } = useAuth();
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
 
   // Fetch categories when modal opens
   useEffect(() => {
-    if (!show || !user?.userID) return;
+    if (!show || !token) return;
 
     let cancelled = false;
 
     (async () => {
       try {
-        const data = await getCategories(user.userID);
+        const data = await getCategories();
         if (!cancelled) setCategories(data);
       } catch (err) {
         if (!cancelled) setError("Failed to load categories.");
@@ -27,13 +27,13 @@ const ShowCategoriesModal = ({ show, onClose, onRefreshCategories }) => {
     return () => {
       cancelled = true;
     };
-  }, [show, user?.userID]);
+  }, [show, token]);
 
   const handleDelete = async (categoryID) => {
     if (!window.confirm("Delete this category? Notes in this category might be affected.")) return;
     try {
-      await deleteCategory(categoryID, user.userID);
-      const data = await getCategories(user.userID);
+      await deleteCategory(categoryID);
+      const data = await getCategories();
       setCategories(data);
       onRefreshCategories();
     } catch (err) {

@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { getNotes, getCategories } from '../services/api';
-import Notes from '../components/Notes';
-import DashboardHeader from '../components/DashboardHeader';
-import '../styles/Dashboard.css';
-
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { getNotes, getCategories } from "../services/api";
+import Notes from "../components/Notes";
+import DashboardHeader from "../components/DashboardHeader";
+import "../styles/Dashboard.css";
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { token, logout } = useAuth();
   const [notes, setNotes] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,20 +15,20 @@ const Dashboard = () => {
 
   useEffect(() => {
     loadData();
-  }, [user?.userID]);
+  }, [token]);
 
   const loadData = async () => {
-    if (!user?.userID) return;
+    if (!token) return;
     setLoading(true);
     try {
       const [notesData, categoriesData] = await Promise.all([
-        getNotes(user.userID),
-        getCategories(user.userID),
+        getNotes(),
+        getCategories(),
       ]);
       setNotes(notesData);
       setCategories(categoriesData);
     } catch (err) {
-      console.error('Error loading data:', err);
+      console.error("Error loading data:", err);
     } finally {
       setLoading(false);
     }
@@ -37,7 +36,7 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     logout();
-    window.location.href = '/login';
+    window.location.href = "/login";
   };
 
   if (loading) {
@@ -56,9 +55,9 @@ const Dashboard = () => {
       />
 
       <main className="dashboard-content">
-        <Notes 
-          notes={notes} 
-          setNotes={setNotes} 
+        <Notes
+          notes={notes}
+          setNotes={setNotes}
           categories={categories}
           onUpdate={loadData}
           showForm={showForm}

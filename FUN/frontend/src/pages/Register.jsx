@@ -23,7 +23,7 @@ const Register = () => {
 
     try {
       const response = await register(formData.username, formData.email, formData.password);
-      login(response.userID, formData.username, formData.email);
+      login(response.token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
