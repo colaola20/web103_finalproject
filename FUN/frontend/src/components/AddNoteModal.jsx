@@ -41,19 +41,19 @@ const AddNoteModal = ({
   onClose,
   categories,
 }) => {
-  const { token } = useAuth();
   const [selectedTone, setSelectedTone] = useState(TONES[0]);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiPreview, setAiPreview] = useState(null);
 
   const handleAiTransform = async () => {
-    if (!formData.content) return alert("Write some content first!");
+    if (!formData.content) 
+      return alert("Write some content first!");
     setAiLoading(true);
     try {
       const data = await transformNote(formData.content, selectedTone);
       setAiPreview(data.aiText);
     } catch (err) {
-      alert("AI Error: " + err.message);
+      console.log("An rror occurred while transforming the note:");
     } finally {
       setAiLoading(false);
     }

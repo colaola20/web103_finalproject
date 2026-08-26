@@ -1,7 +1,6 @@
 import "../styles/DashboardHeader.css";
 import { Plus, X, Settings } from "lucide-react";
 import MainButton from "./MainButton";
-import { useState } from "react";
 import RegularButton from "./RegularButton";
 
 const DashboardHeader = ({

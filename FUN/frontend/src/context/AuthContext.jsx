@@ -1,11 +1,15 @@
-// FUN/frontend/src/context/AuthContext.js
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useEffect, useCallback } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const logout = useCallback(() => {
+    setToken(null);
+    localStorage.removeItem("token");
+  }, []);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -20,15 +24,19 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = (token) => {
-    const authToken = token;
-    setToken(authToken);
-    localStorage.setItem("token", authToken);
-  };
+  // Listen for automatic logout events triggered outside of React components
+  useEffect(() => {
+    const handleUnauthorized = () => logout();
+    window.addEventListener("auth:logout", handleUnauthorized);
 
-  const logout = () => {
-    setToken(null);
-    localStorage.removeItem("token");
+    return () => {
+      window.removeEventListener("auth:logout", handleUnauthorized);
+    };
+  }, [logout]);
+
+  const login = (token) => {
+    setToken(token);
+    localStorage.setItem("token", token);
   };
 
   return (

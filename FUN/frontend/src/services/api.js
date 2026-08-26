@@ -25,6 +25,9 @@ const apiCall = async (endpoint, method = "GET", body = null) => {
 
   if (!response.ok) {
     const error = await response.json();
+    if (error.code === 7026 || error.error === "Invalid or expired token") {
+      window.dispatchEvent(new Event("auth:logout"));
+    }
     throw new Error(error.error || `API Error: ${response.status}`);
   }
 
@@ -46,7 +49,7 @@ export const getCategories = async () => {
 };
 
 export const createCategory = async (name) => {
-  return apiCall("/categories", "POST", {name });
+  return apiCall("/categories", "POST", { name });
 };
 
 export const deleteCategory = async (categoryID) => {
@@ -58,8 +61,8 @@ export const getNotes = async () => {
   return apiCall("/notes", "GET");
 };
 
-export const createNote = async (categoryID, title, content, color) => {
-  return apiCall("/notes", "POST", { categoryID, title, content, color });
+export const createNote = async (categoryID, title, content, color, is_pinned) => {
+  return apiCall("/notes", "POST", { categoryID, title, content, color, is_pinned });
 };
 
 export const updateNote = async (
@@ -95,6 +98,14 @@ export const linkTagToNote = async (noteID, tagID) => {
 export const getNoteTags = async (noteID) => {
   return apiCall(`/notes/${noteID}/tags`, "GET");
 };
+
+export const getUserTags = async () => {
+  return apiCall("/getUserTags", "GET");
+}
+
+export const deleteTag = async (tagID) => {
+  return apiCall(`/tags/${tagID}`, "DELETE");
+}
 
 export const clearNoteTags = async (noteID) => {
   return apiCall(`/notes/${noteID}/tags`, "DELETE");

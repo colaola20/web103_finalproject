@@ -102,7 +102,7 @@ router.get("/notes", authenticateToken, async (req, res) => {
 });
 
 router.post("/notes", authenticateToken, async (req, res) => {
-  const { categoryID, title, content, color } = req.body;
+  const { categoryID, title, content, color, is_pinned } = req.body;
   if (!categoryID || !title || !content || !color) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -119,8 +119,8 @@ router.post("/notes", authenticateToken, async (req, res) => {
     }
 
     const result = await pool.query(
-      "INSERT INTO notes (user_id, category_id, title, content, color) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-      [req.user.id, categoryID, title, content, color],
+      "INSERT INTO notes (user_id, category_id, title, content, color, is_pinned) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+      [req.user.id, categoryID, title, content, color, is_pinned],
     );
     return res.status(201).json({
       message: `Note ${title} created successfully!`,
@@ -256,6 +256,29 @@ router.delete("/notes/:noteID/tags", authenticateToken, async (req, res) => {
     res.json({ message: "Tags cleared", success: true });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/getUserTags", authenticateToken , async (req, res) => { 
+  try{
+    const result = await pool.query("SELECT * FROM tags WHERE user_id = $1" , [
+      req.user.id
+    ]);
+    res.json(result.rows);
+  }catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.delete("/tags/:tagID", authenticateToken, async (req, res) => {
+  try {
+    await pool.query("DELETE FROM tags WHERE id = $1 AND user_id = $2", [
+      req.params.tagID,
+      req.user.id,
+    ]);
+    res.json({ message: "Tag deleted", success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Unable to delete tag" });
   }
 });
 
