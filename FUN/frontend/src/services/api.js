@@ -52,8 +52,8 @@ export const getNotes = async (userID) => {
   return apiCall(`/notes/${userID}`, 'GET');
 };
 
-export const createNote = async (userID, categoryID, title, content, color) => {
-  return apiCall('/notes', 'POST', { userID, categoryID, title, content, color });
+export const createNote = async (userID, categoryID, title, content, color, is_pinned = false) => {
+  return apiCall('/notes', 'POST', { userID, categoryID, title, content, color, is_pinned });
 };
 
 export const updateNote = async (noteID, userID, title, content, color, categoryID, is_pinned) => {
@@ -79,6 +79,10 @@ export const getNoteTags = async (noteID) => {
 
 export const clearNoteTags = async (noteID) => {
   return apiCall(`/notes/${noteID}/tags`, 'DELETE');
+};
+
+export const getUserTags = async (userID) => {
+  return apiCall(`/tags/${userID}`, 'GET');
 };
 
 // Settings Endpoints

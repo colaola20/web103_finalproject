@@ -15,6 +15,15 @@ This unit, be sure to complete all tasks listed below. To complete a task, place
 - [x] 🚩🚩🚩**Complete the Final Project Feature Checklist section below**, detailing each feature you completed in the project (ONLY include features you implemented, not features you planned)
 - [x] 🚩🚩🚩**Record a GIF showing a complete run-through of your app** that displays all the components included in the **Final Project Feature Checklist** below
   - [x] Include this GIF in the **Final Demo GIF** section below
+- [x] Deploy your project on Render
+  - [x] In `readme.md`, add the link to your deployed project
+- [x] Update the status of issues in your project board as you complete them
+- [x] In `readme.md`, check off the features you have completed in this unit by adding a ✅ emoji in front of their title
+  - [x] Under each feature you have completed, **include a GIF** showing feature functionality
+- [x] In this document, complete the **Reflection** section below
+- [ ] 🚩🚩🚩**Complete the Final Project Feature Checklist section below**, detailing each feature you completed in the project (ONLY include features you implemented, not features you planned)
+- [ ] 🚩🚩🚩**Record a GIF showing a complete run-through of your app** that displays all the components included in the **Final Project Feature Checklist** below
+  - [ ] Include this GIF in the **Final Demo GIF** section below
 
 ## Final Project Feature Checklist
 
@@ -71,11 +80,11 @@ Complete the checklist below detailing each baseline, custom, and stretch featur
 - [ ] Show a spinner while a page or page element is loading
 - [ ] Disable buttons and inputs during the form submission process
 - [ ] Disable buttons after they have been clicked
-  - *At least 75% of buttons in your app must exhibit this behavior to receive full credit*
+  - _At least 75% of buttons in your app must exhibit this behavior to receive full credit_
 - [ ] Users can upload images to the app and have them be stored on a cloud service
-  - *A user profile picture does **NOT** count for this rubric item **only if** the app also includes "Login via GitHub" functionality.*
-  - *Adding a photo via a URL does **NOT** count for this rubric item (for example, if the user provides a URL with an image to attach it to the post).*
-  - *Selecting a photo from a list of provided photos does **NOT** count for this rubric item.*
+  - _A user profile picture does **NOT** count for this rubric item **only if** the app also includes "Login via GitHub" functionality._
+  - _Adding a photo via a URL does **NOT** count for this rubric item (for example, if the user provides a URL with an image to attach it to the post)._
+  - _Selecting a photo from a list of provided photos does **NOT** count for this rubric item._
 - [ ] 🍞 [Toast messages](https://www.patternfly.org/v3/pattern-library/communication/toast-notifications/index.html) deliver simple feedback in response to user events
 
 ## Final Demo GIF
@@ -86,20 +95,20 @@ Complete the checklist below detailing each baseline, custom, and stretch featur
 
 ### 1. What went well during this unit?
 
-[👉🏾👉🏾👉🏾 your answer here]
+[The technical foundation of the project felt very solid. Successfully implementing a monorepo structure allowed for better code sharing and consistency across the front-end and back-end. Additionally, the transition from local development to a stable]
 
 ### 2. What were some challenges your group faced in this unit?
 
-[👉🏾👉🏾👉🏾 your answer here]
+[We encountered significant hurdles with dependency management, particularly when resolving version mismatches between Vite and specific React plugins]
 
 ### 3. What were some of the highlights or achievements that you are most proud of in this project?
 
-[👉🏾👉🏾👉🏾 your answer here]
+[One of the biggest wins was successfully implementing the AI feature]
 
 ### 4. Reflecting on your web development journey so far, how have you grown since the beginning of the course?
 
-[👉🏾👉🏾👉🏾 your answer here]
+[we have become much more comfortable troubleshooting complex environment issues and feel confident in our ability to take a project from a local npm run dev to a fully secured, live production server.]
 
 ### 5. Looking ahead, what are your goals related to web development, and what steps do you plan to take to achieve them?
 
-[👉🏾👉🏾👉🏾 your answer here]
+[We plan to dive deeper into Kubernetes for orchestration and explore advanced security configurations for web applications]

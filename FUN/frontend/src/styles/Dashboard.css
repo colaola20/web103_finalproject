@@ -61,8 +61,120 @@
   gap: 5px;
 }
 
-.tags-btn {
+.tag-filter-wrapper {
   position: relative;
+}
+
+.tag-btn-active {
+  background: #667eea !important;
+  color: white !important;
+}
+
+.tag-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  color: #667eea;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin: 0 4px;
+}
+
+.tag-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 100;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  min-width: 180px;
+  padding: 8px 0;
+}
+
+.tag-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.tag-dropdown-item:hover {
+  background: #f5f5f5;
+}
+
+.tag-dropdown-item input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.tag-dropdown-empty {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #999;
+  margin: 0;
+}
+
+.tag-clear-all-btn {
+  display: block;
+  width: calc(100% - 16px);
+  margin: 6px 8px 4px;
+  padding: 5px 0;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #666;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.tag-clear-all-btn:hover {
+  background: #f5f5f5;
+}
+
+.active-tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.active-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #eef0ff;
+  color: #667eea;
+  border: 1px solid #c7ceff;
+  border-radius: 999px;
+  font-size: 12px;
+  padding: 3px 10px 3px 10px;
+}
+
+.chip-remove {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #667eea;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+.chip-remove:hover {
+  opacity: 1;
 }
 
 /* Pinned Notes Section */
