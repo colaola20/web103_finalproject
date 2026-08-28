@@ -153,7 +153,7 @@ router.delete("/notes/:id", authenticateToken, async (req, res) => {
 router.get("/categories", authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM categories WHERE user_id = $1 ORDER BY name ASC",
+      "SELECT id, name FROM categories WHERE user_id = $1 ORDER BY name ASC",
       [req.user.id],
     );
     res.json(result.rows);
@@ -259,13 +259,13 @@ router.delete("/notes/:noteID/tags", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("/getUserTags", authenticateToken , async (req, res) => { 
-  try{
-    const result = await pool.query("SELECT * FROM tags WHERE user_id = $1" , [
-      req.user.id
+router.get("/getUserTags", authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM tags WHERE user_id = $1", [
+      req.user.id,
     ]);
     res.json(result.rows);
-  }catch (error) {
+  } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 });

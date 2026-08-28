@@ -9,7 +9,7 @@ import {
   createTag,
   linkTagToNote,
   getNoteTags,
-  clearNoteTags
+  clearNoteTags,
 } from "../services/api";
 import AddNoteModal from "./AddNoteModal";
 import Note from "./Note";
@@ -241,12 +241,14 @@ const Notes = ({
             >
               Tags <ChevronDown size={14} />
             </RegularButton>
-            <ShowTags
-              tags={tags}
-              show={showTag}
-              onClose={() => setShowTags(false)}
-              refetchTags={setTags}
-            />
+            <div className="category-modal-anchor">
+              <ShowTags
+                tags={tags}
+                show={showTag}
+                onClose={() => setShowTags(false)}
+                refetchTags={setTags}
+              />
+            </div>
           </div>
         </div>
 

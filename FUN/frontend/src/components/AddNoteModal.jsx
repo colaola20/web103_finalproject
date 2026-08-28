@@ -4,7 +4,6 @@ import RegularButton from "./RegularButton";
 import { useState } from "react";
 import { Sparkles, Check, X, Loader2 } from "lucide-react";
 import { transformNote } from "../services/api";
-import { useAuth } from "../context/AuthContext";
 
 const COLOR_PALETTE = [
   "#fff3cd",
@@ -46,8 +45,7 @@ const AddNoteModal = ({
   const [aiPreview, setAiPreview] = useState(null);
 
   const handleAiTransform = async () => {
-    if (!formData.content) 
-      return alert("Write some content first!");
+    if (!formData.content) return alert("Write some content first!");
     setAiLoading(true);
     try {
       const data = await transformNote(formData.content, selectedTone);
@@ -112,7 +110,9 @@ const AddNoteModal = ({
               required
             >
               <option value="" disabled>
-                Select a category
+                {categories
+                  ? "Select a category"
+                  : "You need to create a category to create a Note."}
               </option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>

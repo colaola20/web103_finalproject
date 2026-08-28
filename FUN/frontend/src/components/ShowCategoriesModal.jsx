@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { getCategories, createCategory, deleteCategory } from "../services/api";
+import { getCategories, deleteCategory } from "../services/api";
 import "../styles/ShowCategoriesModal.css";
 import { X, Trash2 } from "lucide-react";
 
@@ -40,7 +40,6 @@ const ShowCategoriesModal = ({ show, onClose }) => {
       await deleteCategory(categoryID);
       const data = await getCategories();
       setCategories(data);
-      onRefreshCategories();
     } catch (err) {
       setError(err.message);
     }

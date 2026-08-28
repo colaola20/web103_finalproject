@@ -1,30 +1,30 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { login as loginAPI } from '../services/api';
-import { useAuth } from '../context/AuthContext';
-import '../styles/Auth.css';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { login as loginAPI } from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import "../styles/Auth.css";
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       const response = await loginAPI(formData.email, formData.password);
       login(response.token);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -54,9 +54,13 @@ const Login = () => {
             onChange={handleChange}
             required
           />
-          <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
         </form>
-        <p>Don't have an account? <Link to="/register">Register</Link></p>
+        <p>
+          Don't have an account? <Link to="/register">Register</Link>
+        </p>
       </div>
     </div>
   );
