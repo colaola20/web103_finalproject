@@ -1,5 +1,10 @@
 # Note Board
 
+Video walk through: https://drive.google.com/file/d/1IM39WNSkWPXzcUkB3yqlThQnSJ5b118C/view?usp=sharing
+
+Website: https://codepathweb103.mydomainjpr.uk/login
+
+
 CodePath WEB103 Final Project
 
 Designed and developed by: Olha Sorych, Sing Zheng, and Jonatan Paulino
